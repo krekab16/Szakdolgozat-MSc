@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "388344003496",
+    "project_id": "szakdolgozat-a9498",
+    "storage_bucket": "szakdolgozat-a9498.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388344003496:android:1dafdf29e26ef03ccd3b9d",
+        "android_client_info": {
+          "package_name": "com.example.szakdolgozat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "388344003496-7ctflk55p02bl9uq238633jurpr7rahl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqlWEn6O-btgN0k-oczgQeuKDZmvi_lj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "388344003496-7ctflk55p02bl9uq238633jurpr7rahl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
