@@ -8,6 +8,7 @@ import '../utils/password_input_box.dart';
 import '../utils/styles.dart';
 import '../utils/text_strings.dart';
 import '../viewmodel/log_in_screen_view_model.dart';
+import 'face_id_screen_ui.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({Key? key}) : super(key: key);
@@ -105,7 +106,14 @@ class _LogInScreen extends State<LogInScreen> {
                           }
                         }
                       }),
-                    )
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: MyButton(logInWithFaceID, () async {
+                          logInViewModel.navigateToFaceId(context);
+                      }),
+                    ),
+
                   ],
                 ),
               ),

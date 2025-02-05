@@ -1,3 +1,4 @@
+import 'package:application/ui/face_id_screen_ui.dart';
 import 'package:application/ui/favourite_event_screen_ui.dart';
 import 'package:application/ui/home_screen.dart';
 import 'package:application/ui/log_in_screen_ui.dart';
@@ -72,6 +73,7 @@ class _MyAppState extends State<MyApp> {
           newEventRoute: (context) => const NewEventScreen(),
           participatedEventRoute: (context) => const ParticipatedEventScreen(),
           mapRoute: (context) => const MapScreen(),
+          faceIdRoute: (context) => const FaceIdScreen(),
         },
       ),
     );
