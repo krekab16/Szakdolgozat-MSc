@@ -28,6 +28,10 @@ class LogInViewModel with ChangeNotifier {
     Navigator.pushNamed(context, homeRoute);
   }
 
+  void navigateToFaceId(BuildContext context) {
+    Navigator.pushNamed(context, faceIdRoute);
+  }
+
   String? validateEmail(String value) {
     if (value.isEmpty) {
       return mustEnterEmailErrorMessage;

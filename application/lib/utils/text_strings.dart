@@ -76,3 +76,4 @@ String macOSErrorMessage = "Az alapértelmezett Firebase beállítások nincsene
 String windowsErrorMessage = "Az alapértelmezett Firebase beállítások nincsenek konfigurálva windows rendszerre - újra konfigurálhatod ezt a FlutterFire CLI újra futtatásával.";
 String linuxErrorMessage = "Az alapértelmezett Firebase beállítások nincsenek konfigurálva linux rendszerre - újra konfigurálhatod ezt a FlutterFire CLI újra futtatásával.";
 String notSupportedErrorMessage = "Ezen a platformon nem támogatott az alapértelmezett Firebase beállítások.";
+String logInWithFaceID= "Bejelentkezés arcfelismeréssel";

@@ -2,6 +2,7 @@ const String startRoute = '/start';
 const String signUpRoute = '/signup';
 const String logInRoute = '/login';
 const String homeRoute = '/home';
+const String faceIdRoute = '/faceid';
 const String eventRoute = '/event';
 const String profileRoute = '/profile';
 const String newEventRoute = '/new_event';
