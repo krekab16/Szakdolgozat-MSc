@@ -12,6 +12,7 @@ import 'package:application/utils/route_constants.dart';
 import 'package:application/utils/text_strings.dart';
 import 'package:application/viewmodel/created_event_screen_view_model.dart';
 import 'package:application/viewmodel/event_view_model.dart';
+import 'package:application/viewmodel/faceid_view_model.dart';
 import 'package:application/viewmodel/favourite_event_screen_view_model.dart';
 import 'package:application/viewmodel/home_view_model.dart';
 import 'package:application/viewmodel/log_in_screen_view_model.dart';
@@ -54,6 +55,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => ParticipatedEventViewModel()),
         ChangeNotifierProvider(create: (_) => NewEventScreenViewModel()),
         ChangeNotifierProvider(create: (_) => CreatedEventViewModel()),
+        ChangeNotifierProvider(create: (_) => FaceIdViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
