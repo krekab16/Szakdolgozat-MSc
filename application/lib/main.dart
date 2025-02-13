@@ -1,6 +1,7 @@
 import 'package:application/ui/face_id_screen_ui.dart';
 import 'package:application/ui/favourite_event_screen_ui.dart';
 import 'package:application/ui/home_screen.dart';
+import 'package:application/ui/liked_event_screen_ui.dart';
 import 'package:application/ui/log_in_screen_ui.dart';
 import 'package:application/ui/map_screen_ui.dart';
 import 'package:application/ui/new_event_screen_ui.dart';
@@ -15,6 +16,7 @@ import 'package:application/viewmodel/event_view_model.dart';
 import 'package:application/viewmodel/faceid_view_model.dart';
 import 'package:application/viewmodel/favourite_event_screen_view_model.dart';
 import 'package:application/viewmodel/home_view_model.dart';
+import 'package:application/viewmodel/liked_event_view_model.dart';
 import 'package:application/viewmodel/log_in_screen_view_model.dart';
 import 'package:application/viewmodel/menu_view_model.dart';
 import 'package:application/viewmodel/participated_event_view_model.dart';
@@ -56,6 +58,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => NewEventScreenViewModel()),
         ChangeNotifierProvider(create: (_) => CreatedEventViewModel()),
         ChangeNotifierProvider(create: (_) => FaceIdViewModel()),
+        ChangeNotifierProvider(create: (_) => LikedEventViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -76,6 +79,7 @@ class _MyAppState extends State<MyApp> {
           participatedEventRoute: (context) => const ParticipatedEventScreen(),
           mapRoute: (context) => const MapScreen(),
           faceIdRoute: (context) => const FaceIdScreen(),
+          likedEventRoute: (context) => const LikedEventScreen(),
         },
       ),
     );
