@@ -165,68 +165,49 @@ class _EventScreenState extends State<EventScreen> {
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
                               onTap: () {
                                 setState(() {
                                   _isFavorite = !_isFavorite;
                                   if (_isFavorite) {
-                                    eventViewModel.addFavouriteEvent(
-                                        userModel, widget.eventModel.id);
+                                    eventViewModel.addFavouriteEvent(userModel, widget.eventModel.id);
                                     if (eventViewModel.errorMessages.isEmpty) {
-                                      Fluttertoast.showToast(
-                                          msg: successfulAddToFavoritesMessage);
+                                      Fluttertoast.showToast(msg: successfulAddToFavoritesMessage);
                                     } else {
                                       showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                                title: Text(
-                                                  errorDialogTitle,
-                                                  style: Styles.errorText,
-                                                ),
-                                                content: Text(
-                                                  eventViewModel.errorMessages
-                                                      .join(" "),
-                                                  style: Styles.errorText,
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                    child: Text(close),
-                                                  )
-                                                ],
-                                              ));
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: Text(errorDialogTitle, style: Styles.errorText),
+                                          content: Text(eventViewModel.errorMessages.join(" "), style: Styles.errorText),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(context),
+                                              child: Text(close),
+                                            )
+                                          ],
+                                        ),
+                                      );
                                     }
                                   } else {
-                                    eventViewModel.removeFavouriteEvent(
-                                        userModel, widget.eventModel.id);
+                                    eventViewModel.removeFavouriteEvent(userModel, widget.eventModel.id);
                                     if (eventViewModel.errorMessages.isEmpty) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                              successfulRemoveFromFavoritesMessage);
+                                      Fluttertoast.showToast(msg: successfulRemoveFromFavoritesMessage);
                                     } else {
                                       showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                                title: Text(
-                                                  errorDialogTitle,
-                                                  style: Styles.errorText,
-                                                ),
-                                                content: Text(
-                                                  eventViewModel.errorMessages
-                                                      .join(" "),
-                                                  style: Styles.errorText,
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                    child: Text(close),
-                                                  )
-                                                ],
-                                              ));
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: Text(errorDialogTitle, style: Styles.errorText),
+                                          content: Text(eventViewModel.errorMessages.join(" "), style: Styles.errorText),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(context),
+                                              child: Text(close),
+                                            )
+                                          ],
+                                        ),
+                                      );
                                     }
                                   }
                                 });
@@ -236,6 +217,45 @@ class _EventScreenState extends State<EventScreen> {
                                 color: _isFavorite ? Colors.red : Colors.grey,
                                 size: 35,
                               ),
+                            ),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: (){},
+                                  child: Icon(
+                                    Icons.star_border,
+                                    size: 35,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: (){},
+                                  child: Icon(
+                                    Icons.star_border,
+                                    size: 35,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: (){},
+                                  child: Icon(
+                                    Icons.star_border,
+                                    size: 35,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: (){},
+                                  child: Icon(
+                                    Icons.star_border,
+                                    size: 35,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: (){},
+                                  child: Icon(
+                                    Icons.star_border,
+                                    size: 35,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

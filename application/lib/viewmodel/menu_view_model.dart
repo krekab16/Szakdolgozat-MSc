@@ -90,6 +90,10 @@ class MenuViewModel with ChangeNotifier {
     );
   }
 
+  void navigateToLikedEvent(BuildContext context) {
+    Navigator.pushNamed(context, likedEventRoute);
+  }
+
 
   void logOut(BuildContext context) {
     Navigator.popUntil(context, ModalRoute.withName('/'));
