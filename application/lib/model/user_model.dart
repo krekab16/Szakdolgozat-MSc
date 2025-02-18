@@ -8,6 +8,7 @@ class UserModel with ChangeNotifier {
   late String password;
   late bool isOrganizer;
   List<String>? favorites;
+  Map<String,double>? ratings;
   late String id;
 
   UserModel({
@@ -18,6 +19,7 @@ class UserModel with ChangeNotifier {
     required this.isOrganizer,
     required this.id,
     this.favorites,
+    this.ratings,
   });
 
   factory UserModel.createEmpty() {
@@ -28,7 +30,9 @@ class UserModel with ChangeNotifier {
         password: '',
         isOrganizer: false,
         id: '',
-        favorites: []);
+        favorites: [],
+        ratings: {},
+    );
   }
 
   UserDTO toDTO() {
@@ -39,6 +43,7 @@ class UserModel with ChangeNotifier {
       password: password,
       isOrganizer: isOrganizer,
       favorites: favorites,
+      ratings: ratings,
       id: id,
     );
   }
@@ -51,6 +56,7 @@ class UserModel with ChangeNotifier {
       password: userDTO.password,
       isOrganizer: userDTO.isOrganizer,
       favorites: userDTO.favorites,
+      ratings: userDTO.ratings,
       id: userDTO.id,
     );
   }
@@ -63,6 +69,7 @@ class UserModel with ChangeNotifier {
     this.password = newModel.password;
     this.isOrganizer = newModel.isOrganizer;
     this.favorites = newModel.favorites;
+    this.ratings = newModel.ratings;
     notifyListeners();
   }
 

@@ -78,4 +78,5 @@ String linuxErrorMessage = "Az alapértelmezett Firebase beállítások nincsene
 String notSupportedErrorMessage = "Ezen a platformon nem támogatott az alapértelmezett Firebase beállítások.";
 String logInWithFaceID= "Bejelentkezés arcfelismeréssel";
 String faceIdAuthentication= "A belépéshez hitelesítse magát FaceId-val";
-String liked= "Értékeltek";
+String rated= "Értékeltek";
+String successfulRated= "Sirekeres értékelés!";

@@ -1,6 +1,7 @@
 import 'package:application/utils/my_button.dart';
 import 'package:application/viewmodel/event_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,7 @@ class EventScreen extends StatefulWidget {
 
 class _EventScreenState extends State<EventScreen> {
   bool _isFavorite = false;
+  double rating = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -218,44 +220,47 @@ class _EventScreenState extends State<EventScreen> {
                                 size: 35,
                               ),
                             ),
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: (){},
-                                  child: Icon(
-                                    Icons.star_border,
-                                    size: 35,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: (){},
-                                  child: Icon(
-                                    Icons.star_border,
-                                    size: 35,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: (){},
-                                  child: Icon(
-                                    Icons.star_border,
-                                    size: 35,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: (){},
-                                  child: Icon(
-                                    Icons.star_border,
-                                    size: 35,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: (){},
-                                  child: Icon(
-                                    Icons.star_border,
-                                    size: 35,
-                                  ),
-                                ),
-                              ],
+                            FutureBuilder<double>(
+                              future: eventViewModel.getEventRating(userModel.id, widget.eventModel.id),
+                              builder: (context, ratingSnapshot) {
+                                if (ratingSnapshot.hasData) {
+                                  double initialRating = ratingSnapshot.data ?? 0.0;
+                                  return RatingBar.builder(
+                                    minRating: 1,
+                                    maxRating: 5,
+                                    initialRating: initialRating,
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    onRatingUpdate: (newRating) async {
+                                      setState(() {
+                                        initialRating = newRating;
+                                      });
+                                      await eventViewModel.addRatingToEvent(userModel.id, widget.eventModel.id, newRating);
+                                      if (eventViewModel.errorMessages.isEmpty) {
+                                        Fluttertoast.showToast(msg: successfulRated);
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            title: Text(errorDialogTitle, style: Styles.errorText),
+                                            content: Text(eventViewModel.errorMessages.join(" "), style: Styles.errorText),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(context),
+                                                child: Text(close),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  );
+                                } else {
+                                  return Text(loading);
+                                }
+                              },
                             ),
                           ],
                         ),
@@ -264,7 +269,7 @@ class _EventScreenState extends State<EventScreen> {
                         padding: const EdgeInsets.all(10),
                         child: MyButton(
                           participation,
-                          () async {
+                              () async {
                             await eventViewModel.addParticipation(
                                 userModel.id, widget.eventModel);
                             if (eventViewModel.errorMessages.isEmpty) {
@@ -298,13 +303,13 @@ class _EventScreenState extends State<EventScreen> {
                         padding: const EdgeInsets.all(10),
                         child: MyButton(
                           removeParticipation,
-                          () async {
+                              () async {
                             await eventViewModel.removeParticipation(
                                 userModel.id, widget.eventModel);
                             if (eventViewModel.errorMessages.isEmpty) {
                               Fluttertoast.showToast(
                                   msg:
-                                      successfulRemoveFromParticipationMessage);
+                                  successfulRemoveFromParticipationMessage);
                             } else {
                               showDialog(
                                 context: context,
