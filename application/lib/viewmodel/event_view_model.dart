@@ -83,5 +83,35 @@ class EventViewModel with ChangeNotifier {
     Navigator.pop(context);
   }
 
+  Future<void> addRatingToEvent(String userId, String eventId, double rating) async {
+    try {
+      await service.addRating(userId, eventId, rating);
+      errorMessages = [];
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+    }
+    notifyListeners();
+  }
+
+  Future<double> getEventRating(String userId, String eventId) async {
+    try {
+      double rating = await service.getRating(userId, eventId);
+      errorMessages = [];
+      return rating;
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+      return 0.0;
+    } finally {
+      notifyListeners();
+    }
+  }
 
 }

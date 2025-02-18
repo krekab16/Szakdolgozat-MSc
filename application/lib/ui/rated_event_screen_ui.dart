@@ -4,24 +4,24 @@ import 'package:provider/provider.dart';
 import '../utils/colors.dart';
 import '../utils/styles.dart';
 import '../utils/text_strings.dart';
-import '../viewmodel/liked_event_view_model.dart';
+import '../viewmodel/rated_event_view_model.dart';
 
-class LikedEventScreen extends StatefulWidget {
-  const LikedEventScreen({Key? key}) : super(key: key);
+class RatedEventScreen extends StatefulWidget {
+  const RatedEventScreen({Key? key}) : super(key: key);
 
   @override
-  State<LikedEventScreen> createState() => _LikedEventScreenState();
+  State<RatedEventScreen> createState() => _RatedEventScreenState();
 }
 
-class _LikedEventScreenState extends State<LikedEventScreen> {
+class _RatedEventScreenState extends State<RatedEventScreen> {
   @override
   Widget build(BuildContext context) {
-    final likedEventViewModel = Provider.of<LikedEventViewModel>(context);
+    final ratedEventViewModel = Provider.of<RatedEventViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyColors.lightBlueColor,
         title: Text(
-          liked,
+          rated,
           style: Styles.textStyles,
         ),
       ),
@@ -32,7 +32,7 @@ class _LikedEventScreenState extends State<LikedEventScreen> {
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: Column(
-                children: likedEventViewModel.likedEventModel.events
+                children: ratedEventViewModel.ratedEventModel.events
                     .map((event) => EventBox(event))
                     .toList(),
               ),

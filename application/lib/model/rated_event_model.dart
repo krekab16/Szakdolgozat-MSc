@@ -1,5 +1,5 @@
 import 'event_model.dart';
 
-class LikedEventModel {
+class RatedEventModel {
   List<EventModel> events = [];
 }

@@ -1,5 +1,7 @@
+import 'package:application/ui/rated_event_screen_ui.dart';
 import 'package:application/viewmodel/profile_view_model.dart';
 import 'package:application/viewmodel/participated_event_view_model.dart';
+import 'package:application/viewmodel/rated_event_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../service/user_database_service.dart';
@@ -90,8 +92,17 @@ class MenuViewModel with ChangeNotifier {
     );
   }
 
-  void navigateToLikedEvent(BuildContext context) {
-    Navigator.pushNamed(context, likedEventRoute);
+  void navigateToRatedEvent(BuildContext context, String userId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChangeNotifierProvider(
+          create: (context) =>
+          RatedEventViewModel()..fetchRatedEvent(userId),
+          child: const RatedEventScreen(),
+        ),
+      ),
+    );
   }
 
 

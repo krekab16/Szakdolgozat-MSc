@@ -5,6 +5,7 @@ class UserDTO {
   late String password;
   late bool isOrganizer;
   List<String>? favorites;
+  Map<String, double>? ratings;
   late String id;
 
   UserDTO({
@@ -15,6 +16,7 @@ class UserDTO {
     required this.isOrganizer,
     required this.id,
     this.favorites,
+    this.ratings,
   });
 
   Map<String, dynamic> toJson() {
@@ -25,6 +27,7 @@ class UserDTO {
       'password': password,
       'isOrganizer': isOrganizer,
       'favorites': favorites,
+      'ratings': ratings,
     };
   }
 
@@ -36,6 +39,7 @@ class UserDTO {
       password: json['password'],
       isOrganizer: json['isOrganizer'],
       favorites: List<String>.from(json['favorites'] as List),
+      ratings: Map<String, double>.from(json['ratings'] as Map),
       id: id,
     );
   }

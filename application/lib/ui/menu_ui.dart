@@ -64,8 +64,8 @@ class _MenuState extends State<Menu> {
               () => menuViewModel.navigateToFavourites(context,userModel.id)),
           DrawerList(profile, const Icon(Icons.account_circle),
               () => menuViewModel.navigateToProfile(context, userModel.id)),
-          DrawerList(liked, const Icon(Icons.star),
-                  () => menuViewModel.navigateToLikedEvent(context)),
+          DrawerList(rated, const Icon(Icons.star),
+                  () => menuViewModel.navigateToRatedEvent(context, userModel.id)),
           if (userModel.isOrganizer)...[
             DrawerList(participatedEvents, const Icon(Icons.event_rounded),
                 () => menuViewModel.navigateToParticipatedEvent(context, userModel.id)),
