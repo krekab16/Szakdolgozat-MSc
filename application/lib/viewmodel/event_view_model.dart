@@ -2,11 +2,13 @@ import 'package:application/model/event_model.dart';
 import 'package:application/model/user_model.dart';
 import 'package:flutter/widgets.dart';
 import '../service/event_database_service.dart';
+import '../service/rating_database_service.dart';
 import '../service/user_database_service.dart';
 import '../utils/text_strings.dart';
 
 class EventViewModel with ChangeNotifier {
   final EventDatabaseService service = EventDatabaseService();
+  final RatingDatabaseService ratingService = RatingDatabaseService();
   final UserDatabaseService userService = UserDatabaseService();
 
   List<String> errorMessages = [];
@@ -85,7 +87,7 @@ class EventViewModel with ChangeNotifier {
 
   Future<void> addRatingToEvent(String userId, String eventId, double rating) async {
     try {
-      await service.addRating(userId, eventId, rating);
+      await ratingService.addRating(userId, eventId, rating);
       errorMessages = [];
     } catch (e) {
       if (e.toString().isNotEmpty) {
@@ -99,7 +101,7 @@ class EventViewModel with ChangeNotifier {
 
   Future<double> getEventRating(String userId, String eventId) async {
     try {
-      double rating = await service.getRating(userId, eventId);
+      double rating = await ratingService.getRating(userId, eventId);
       errorMessages = [];
       return rating;
     } catch (e) {

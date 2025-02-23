@@ -5,7 +5,7 @@ class UserDTO {
   late String password;
   late bool isOrganizer;
   List<String>? favorites;
-  Map<String, double>? ratings;
+  List<String>? ratings;
   late String id;
 
   UserDTO({
@@ -39,7 +39,7 @@ class UserDTO {
       password: json['password'],
       isOrganizer: json['isOrganizer'],
       favorites: List<String>.from(json['favorites'] as List),
-      ratings: Map<String, double>.from(json['ratings'] as Map),
+      ratings: List<String>.from(json['ratings'] as List),
       id: id,
     );
   }

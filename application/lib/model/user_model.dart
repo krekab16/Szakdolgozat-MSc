@@ -8,7 +8,7 @@ class UserModel with ChangeNotifier {
   late String password;
   late bool isOrganizer;
   List<String>? favorites;
-  Map<String,double>? ratings;
+  List<String>? ratings;
   late String id;
 
   UserModel({
@@ -31,7 +31,7 @@ class UserModel with ChangeNotifier {
         isOrganizer: false,
         id: '',
         favorites: [],
-        ratings: {},
+        ratings: [],
     );
   }
 
