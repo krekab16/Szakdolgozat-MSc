@@ -1,3 +1,4 @@
+import 'package:application/model/event_rating_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'event_dto.dart';
 
@@ -10,7 +11,7 @@ class EventModel {
   int stuffLimit;
   String description;
   String id;
-
+  List<EventRatingModel>? ratings;
 
   EventModel({
     required this.name,
@@ -21,6 +22,7 @@ class EventModel {
     required this.stuffLimit,
     required this.description,
     required this.id,
+    this.ratings,
   });
 
   factory EventModel.createEmpty() {
@@ -33,7 +35,7 @@ class EventModel {
       stuffLimit: 0,
       description: '',
       id: '',
-
+      ratings: [],
     );
   }
 

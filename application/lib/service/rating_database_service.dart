@@ -1,31 +1,28 @@
+import 'package:application/model/rating_dto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/event_dto.dart';
 
 class RatingDatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-
-  Future<void> addRating(String userId, String eventId, double rating) async {
+  Future<void> addRating(RatingDTO ratingDTO) async {
     try {
       QuerySnapshot existingRatings = await _firestore
           .collection('ratings')
-          .where('userId', isEqualTo: userId)
-          .where('eventId', isEqualTo: eventId)
+          .where('userId', isEqualTo: ratingDTO.userId)
+          .where('eventId', isEqualTo: ratingDTO.eventId)
           .get();
 
       if (existingRatings.docs.isNotEmpty) {
         String ratingId = existingRatings.docs.first.id;
         await _firestore.collection('ratings').doc(ratingId).update({
-          'rating': rating,
+          'rating': ratingDTO.rating,
         });
       } else {
-        DocumentReference ratingDoc = await _firestore.collection('ratings').add({
-          'userId': userId,
-          'eventId': eventId,
-          'rating': rating,
-        });
-        await _firestore.collection('users').doc(userId).update({
-          'ratings': FieldValue.arrayUnion([ratingDoc.id]),
+        await _firestore.collection('ratings').add({
+          'userId': ratingDTO.userId,
+          'eventId': ratingDTO.eventId,
+          'rating': ratingDTO.rating,
         });
       }
     } on FirebaseException catch (e) {
@@ -33,32 +30,27 @@ class RatingDatabaseService {
     }
   }
 
-
-  Future<double> getRating(String userId, String eventId) async {
+  Future<double> getMyRating(String userId, String eventId) async {
     try {
-      DocumentReference userRef = _firestore.collection('users').doc(userId);
-      DocumentSnapshot userSnapshot = await userRef.get();
-      if (userSnapshot.exists) {
-        List<String> ratingIds = List<String>.from(userSnapshot.get('ratings') ?? []);
-        for (String ratingId in ratingIds) {
-          DocumentReference ratingRef = _firestore.collection('ratings').doc(ratingId);
-          DocumentSnapshot ratingSnapshot = await ratingRef.get();
-          if (ratingSnapshot.exists) {
-            String eventIdFromDb = ratingSnapshot.get('eventId');
-            if (eventIdFromDb == eventId) {
-              double rating = ratingSnapshot.get('rating');
-              return rating;
-            }
-          }
-        }
+      QuerySnapshot ratingSnapshot = await _firestore
+          .collection('ratings')
+          .where('userId', isEqualTo: userId)
+          .where('eventId', isEqualTo: eventId)
+          .get();
+
+      if (ratingSnapshot.docs.isNotEmpty) {
+        double rating = ratingSnapshot.docs.first.get('rating');
+        return rating;
       }
       return 0.0;
     } on FirebaseException catch (e) {
       throw Exception(e.message);
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 
-  Future<List<EventDTO>> fetchRatedEvent(String userId) async {
+  Future<List<EventDTO>> fetchMyRatedEvent(String userId) async {
     try {
       QuerySnapshot ratingsSnapshot = await _firestore
           .collection('ratings')
@@ -80,6 +72,23 @@ class RatingDatabaseService {
         return EventDTO.fromJson(data, doc.id);
       }).toList();
       return events;
+    } on FirebaseException catch (e) {
+      throw Exception(e.message);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<double>> getAllRatingValueForEvent(String eventId) async {
+    try {
+      QuerySnapshot ratingSnapshot = await _firestore
+          .collection('ratings')
+          .where('eventId', isEqualTo: eventId)
+          .get();
+      List<double> ratings = ratingSnapshot.docs
+          .map((doc) => (doc['rating'] as num).toDouble())
+          .toList();
+      return ratings;
     } on FirebaseException catch (e) {
       throw Exception(e.message);
     } catch (e) {

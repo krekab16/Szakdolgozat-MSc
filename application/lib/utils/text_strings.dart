@@ -80,3 +80,4 @@ String logInWithFaceID= "Bejelentkezés arcfelismeréssel";
 String faceIdAuthentication= "A belépéshez hitelesítse magát FaceId-val";
 String rated= "Értékeltek";
 String successfulRated= "Sirekeres értékelés!";
+String mustParticipateText= "Az eseményt csak a résztvevők értékelhetik!";

@@ -1,4 +1,5 @@
 import 'package:application/model/event_model.dart';
+import 'package:application/model/rating_dto.dart';
 import 'package:application/model/user_model.dart';
 import 'package:flutter/widgets.dart';
 import '../service/event_database_service.dart';
@@ -87,7 +88,8 @@ class EventViewModel with ChangeNotifier {
 
   Future<void> addRatingToEvent(String userId, String eventId, double rating) async {
     try {
-      await ratingService.addRating(userId, eventId, rating);
+      RatingDTO ratingDTO = RatingDTO(userId: userId, eventId: eventId, rating: rating);
+      await ratingService.addRating(ratingDTO);
       errorMessages = [];
     } catch (e) {
       if (e.toString().isNotEmpty) {
@@ -99,9 +101,10 @@ class EventViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<double> getEventRating(String userId, String eventId) async {
+
+  Future<double> getMyRatingForEvent(String userId, String eventId) async {
     try {
-      double rating = await ratingService.getRating(userId, eventId);
+      double rating = await ratingService.getMyRating(userId, eventId);
       errorMessages = [];
       return rating;
     } catch (e) {
@@ -113,6 +116,79 @@ class EventViewModel with ChangeNotifier {
       return 0.0;
     } finally {
       notifyListeners();
+    }
+  }
+
+
+  Future<Map<String, dynamic>> getRatingValuesForEvent(String eventId) async {
+    try {
+      List<double> ratings = await ratingService.getAllRatingValueForEvent(eventId);
+
+      if (ratings.isEmpty) {
+        return {
+          'counter': 0,
+          'average': 0.0,
+          'counterOneStars': 0,
+          'counterTwoStars': 0,
+          'counterThreeStars': 0,
+          'counterFourStars': 0,
+          'counterFiveStars': 0,
+        };
+      }
+
+      int counterOneStars = 0;
+      int counterTwoStars = 0;
+      int counterThreeStars = 0;
+      int counterFourStars = 0;
+      int counterFiveStars = 0;
+
+      double sumRatings = 0;
+
+      for (double rating in ratings) {
+        sumRatings += rating;
+
+        if (rating == 1.0) counterOneStars++;
+        if (rating == 2.0) counterTwoStars++;
+        if (rating == 3.0) counterThreeStars++;
+        if (rating == 4.0) counterFourStars++;
+        if (rating == 5.0) counterFiveStars++;
+      }
+
+      double average = sumRatings / ratings.length;
+
+      return {
+        'counter': ratings.length,
+        'average': average,
+        'counterOneStars': counterOneStars,
+        'counterTwoStars': counterTwoStars,
+        'counterThreeStars': counterThreeStars,
+        'counterFourStars': counterFourStars,
+        'counterFiveStars': counterFiveStars,
+      };
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+      return {};
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> getParticipationStatusForUser(String userId, String eventId) async {
+    try {
+      bool isParticipated = await userService.getParticipationStatusForUser(userId, eventId);
+      errorMessages = [];
+      return isParticipated;
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+      return false;
     }
   }
 

@@ -13,7 +13,7 @@ class RatedEventViewModel with ChangeNotifier {
 
   Future<void> fetchRatedEvent(String userId) async {
     try {
-      final List<EventDTO> eventDTO = await service.fetchRatedEvent(userId);
+      final List<EventDTO> eventDTO = await service.fetchMyRatedEvent(userId);
       final List<EventModel> eventModel =
       eventDTO.map((dto) => EventModel.fromDTO(dto)).toList();
       ratedEventModel.events = eventModel;

@@ -1,4 +1,5 @@
 import 'package:application/model/user_dto.dart';
+import 'package:application/model/user_rating_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class UserModel with ChangeNotifier {
@@ -8,7 +9,7 @@ class UserModel with ChangeNotifier {
   late String password;
   late bool isOrganizer;
   List<String>? favorites;
-  List<String>? ratings;
+  List<UserRatingModel>? ratings;
   late String id;
 
   UserModel({
@@ -43,7 +44,6 @@ class UserModel with ChangeNotifier {
       password: password,
       isOrganizer: isOrganizer,
       favorites: favorites,
-      ratings: ratings,
       id: id,
     );
   }
@@ -56,7 +56,6 @@ class UserModel with ChangeNotifier {
       password: userDTO.password,
       isOrganizer: userDTO.isOrganizer,
       favorites: userDTO.favorites,
-      ratings: userDTO.ratings,
       id: userDTO.id,
     );
   }
@@ -77,4 +76,11 @@ class UserModel with ChangeNotifier {
     this.isOrganizer = isOrganiser;
     notifyListeners();
   }
+
+  void addRating(UserRatingModel newRating) {
+    ratings ??= [];
+    ratings!.add(newRating);
+    notifyListeners();
+  }
+
 }

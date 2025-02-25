@@ -9,11 +9,13 @@ import '../model/event_model.dart';
 import '../model/user_model.dart';
 import '../utils/styles.dart';
 import '../utils/text_strings.dart';
+import 'package:rating_summary/rating_summary.dart';
+
 
 class EventScreen extends StatefulWidget {
   final EventModel eventModel;
 
-  const EventScreen(this.eventModel, {Key? key}) : super(key: key);
+  const EventScreen(this.eventModel, {Key? key,}) : super(key: key);
 
   @override
   State<EventScreen> createState() => _EventScreenState();
@@ -39,7 +41,7 @@ class _EventScreenState extends State<EventScreen> {
                 Stack(
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height / 2,
+                      height: MediaQuery.of(context).size.height / 3,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.cover,
@@ -117,7 +119,7 @@ class _EventScreenState extends State<EventScreen> {
                                 ),
                               )
                             ],
-                          )
+                          ),
                         ],
                       ),
                     )
@@ -220,50 +222,87 @@ class _EventScreenState extends State<EventScreen> {
                                 size: 35,
                               ),
                             ),
-                            FutureBuilder<double>(
-                              future: eventViewModel.getEventRating(userModel.id, widget.eventModel.id),
-                              builder: (context, ratingSnapshot) {
-                                if (ratingSnapshot.hasData) {
-                                  double initialRating = ratingSnapshot.data ?? 0.0;
-                                  return RatingBar.builder(
-                                    minRating: 1,
-                                    maxRating: 5,
-                                    initialRating: initialRating,
-                                    itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                    ),
-                                    onRatingUpdate: (newRating) async {
-                                      setState(() {
-                                        initialRating = newRating;
-                                      });
-                                      await eventViewModel.addRatingToEvent(userModel.id, widget.eventModel.id, newRating);
-                                      if (eventViewModel.errorMessages.isEmpty) {
-                                        Fluttertoast.showToast(msg: successfulRated);
-                                      } else {
-                                        showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                            title: Text(errorDialogTitle, style: Styles.errorText),
-                                            content: Text(eventViewModel.errorMessages.join(" "), style: Styles.errorText),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(context),
-                                                child: Text(close),
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  );
-                                } else {
-                                  return Text(loading);
+                            FutureBuilder<bool>(
+                              future: eventViewModel.getParticipationStatusForUser(userModel.id, widget.eventModel.id),
+                              builder: (context, participationSnapshot) {
+                                bool isParticipated = participationSnapshot.data ?? false;
+                                if (!isParticipated) {
+                                  return Text(mustParticipateText);
                                 }
+                                return FutureBuilder<double>(
+                                  future: eventViewModel.getMyRatingForEvent(userModel.id, widget.eventModel.id),
+                                  builder: (context, ratingSnapshot) {
+                                    double initialRating = ratingSnapshot.data ?? 0.0;
+                                    return RatingBar.builder(
+                                      minRating: 1,
+                                      maxRating: 5,
+                                      initialRating: initialRating,
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                      ),
+                                      onRatingUpdate: (newRating) async {
+                                        setState(() {
+                                          initialRating = newRating;
+                                        });
+                                        await eventViewModel.addRatingToEvent(userModel.id, widget.eventModel.id, newRating);
+                                        if (eventViewModel.errorMessages.isEmpty) {
+                                          Fluttertoast.showToast(msg: successfulRated);
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              title: Text(errorDialogTitle, style: Styles.errorText),
+                                              content: Text(eventViewModel.errorMessages.join(" "), style: Styles.errorText),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.pop(context),
+                                                  child: Text(close),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    );
+                                  },
+                                );
                               },
                             ),
                           ],
                         ),
+                      ),
+                      FutureBuilder<Map<String, dynamic>>(
+                        future: eventViewModel.getRatingValuesForEvent(widget.eventModel.id),
+                        builder: (context, ratingSnapshot) {
+                          if (ratingSnapshot.hasData) {
+                            var ratingData = ratingSnapshot.data;
+                            double averageRating = ratingData?['average'] ?? 0.0;
+                            int counter = ratingData?['counter'] ?? 0;
+                            int counterFiveStars = ratingData?['counterFiveStars'] ?? 0;
+                            int counterFourStars = ratingData?['counterFourStars'] ?? 0;
+                            int counterThreeStars = ratingData?['counterThreeStars'] ?? 0;
+                            int counterTwoStars = ratingData?['counterTwoStars'] ?? 0;
+                            int counterOneStars = ratingData?['counterOneStars'] ?? 0;
+                            return Column(
+                              children: [
+                                RatingSummary(
+                                  counter: counter,
+                                  average: averageRating,
+                                  showAverage: true,
+                                  counterFiveStars: counterFiveStars,
+                                  counterFourStars: counterFourStars,
+                                  counterThreeStars: counterThreeStars,
+                                  counterTwoStars: counterTwoStars,
+                                  counterOneStars: counterOneStars,
+                                ),
+                                SizedBox(height: 8),
+                              ],
+                            );
+                          } else {
+                            return Text(loading);
+                          }
+                        },
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10),
