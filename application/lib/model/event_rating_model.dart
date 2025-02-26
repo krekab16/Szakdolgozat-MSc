@@ -3,36 +3,37 @@ import 'package:flutter/cupertino.dart';
 
 class EventRatingModel with ChangeNotifier {
   late String userId;
-  late String ratingId;
+  late double rating;
 
   EventRatingModel({
     required this.userId,
-    required this.ratingId,
+    required this.rating,
   });
 
   factory EventRatingModel.createEmpty() {
     return EventRatingModel(
       userId: '',
-      ratingId: '',
+      rating: 0,
     );
   }
 
   RatingDTO toDTO() {
     return RatingDTO(
       userId: userId,
-      ratingId: ratingId,
+      rating: rating,
     );
   }
 
   factory EventRatingModel.fromDTO(RatingDTO ratingDTO) {
     return EventRatingModel(
       userId: ratingDTO.userId!,
-      ratingId: ratingDTO.ratingId!,
+      rating: ratingDTO.rating,
     );
   }
 
   void updateRating(EventRatingModel newModel) {
     this.userId = newModel.userId;
+    this.rating = newModel.rating;
     notifyListeners();
   }
 

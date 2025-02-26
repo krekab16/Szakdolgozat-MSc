@@ -77,10 +77,20 @@ class UserModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void addRating(UserRatingModel newRating) {
-    ratings ??= [];
-    ratings!.add(newRating);
-    notifyListeners();
+  void addRating(UserRatingModel rating) {
+    ratings?.add(rating);
+  }
+
+  void updateUserRatingsList(UserRatingModel newRating) {
+    var existingRating = ratings?.firstWhere(
+          (rating) => rating.eventId == newRating.eventId,
+      orElse: () => UserRatingModel(eventId: newRating.eventId, rating: 0.0),
+    );
+    if (existingRating != null) {
+      existingRating.rating = newRating.rating;
+    } else {
+      ratings?.add(newRating);
+    }
   }
 
 }

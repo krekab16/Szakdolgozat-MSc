@@ -1,7 +1,9 @@
 import 'package:application/model/event_model.dart';
 import 'package:application/model/rating_dto.dart';
 import 'package:application/model/user_model.dart';
+import 'package:application/model/user_rating_model.dart';
 import 'package:flutter/widgets.dart';
+import '../model/event_rating_model.dart';
 import '../service/event_database_service.dart';
 import '../service/rating_database_service.dart';
 import '../service/user_database_service.dart';
@@ -86,10 +88,31 @@ class EventViewModel with ChangeNotifier {
     Navigator.pop(context);
   }
 
-  Future<void> addRatingToEvent(String userId, String eventId, double rating) async {
+  Future<bool> getParticipationStatusForUser(String userId, String eventId) async {
+    try {
+      bool isParticipated = await userService.getParticipationStatusForUser(userId, eventId);
+      errorMessages = [];
+      return isParticipated;
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+      return false;
+    }
+  }
+
+  Future<void> addRatingToEvent(String userId, String eventId, double rating, UserModel userModel, EventModel eventModel) async {
     try {
       RatingDTO ratingDTO = RatingDTO(userId: userId, eventId: eventId, rating: rating);
-      await ratingService.addRating(ratingDTO);
+      await ratingService.addRatingToDB(ratingDTO);
+
+      UserRatingModel newUserRating = UserRatingModel(eventId: eventId, rating: rating);
+      userModel.updateUserRatingsList(newUserRating);
+
+      EventRatingModel newEventRating = EventRatingModel(userId: userId, rating: rating);
+      eventModel.updateEventRatingsList(newEventRating);
       errorMessages = [];
     } catch (e) {
       if (e.toString().isNotEmpty) {
@@ -101,10 +124,20 @@ class EventViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-
-  Future<double> getMyRatingForEvent(String userId, String eventId) async {
+  Future<double> getMyRatingValueForEvent(String userId, String eventId, UserModel userModel) async {
     try {
-      double rating = await ratingService.getMyRating(userId, eventId);
+      UserRatingModel? userRating = userModel.ratings?.firstWhere(
+            (rating) => rating.eventId == eventId,
+        orElse: () => UserRatingModel(eventId: eventId, rating: 0.0),
+      );
+      double rating = userRating?.rating ?? 0.0;
+      if (rating == 0.0) {
+        rating = await ratingService.getMyRating(userId, eventId);
+        if (rating != 0.0) {
+          UserRatingModel newUserRating = UserRatingModel(eventId: eventId, rating: rating);
+          userModel.updateUserRatingsList(newUserRating);
+        }
+      }
       errorMessages = [];
       return rating;
     } catch (e) {
@@ -119,10 +152,13 @@ class EventViewModel with ChangeNotifier {
     }
   }
 
-
-  Future<Map<String, dynamic>> getRatingValuesForEvent(String eventId) async {
+  Future<Map<String, dynamic>> getRatingValuesForEvent(String eventId, EventModel eventModel) async {
     try {
-      List<double> ratings = await ratingService.getAllRatingValueForEvent(eventId);
+      List<double> ratings = eventModel.ratings?.map((e) => e.rating).toList() ?? [];
+
+      if (ratings.isEmpty) {
+        ratings = await ratingService.getAllRatingValueForEvent(eventId);
+      }
 
       if (ratings.isEmpty) {
         return {
@@ -136,22 +172,15 @@ class EventViewModel with ChangeNotifier {
         };
       }
 
-      int counterOneStars = 0;
-      int counterTwoStars = 0;
-      int counterThreeStars = 0;
-      int counterFourStars = 0;
-      int counterFiveStars = 0;
-
+      Map<int, int> starCounters = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
       double sumRatings = 0;
 
       for (double rating in ratings) {
         sumRatings += rating;
-
-        if (rating == 1.0) counterOneStars++;
-        if (rating == 2.0) counterTwoStars++;
-        if (rating == 3.0) counterThreeStars++;
-        if (rating == 4.0) counterFourStars++;
-        if (rating == 5.0) counterFiveStars++;
+        int star = rating.toInt();
+        if (starCounters.containsKey(star)) {
+          starCounters[star] = starCounters[star]! + 1;
+        }
       }
 
       double average = sumRatings / ratings.length;
@@ -159,11 +188,11 @@ class EventViewModel with ChangeNotifier {
       return {
         'counter': ratings.length,
         'average': average,
-        'counterOneStars': counterOneStars,
-        'counterTwoStars': counterTwoStars,
-        'counterThreeStars': counterThreeStars,
-        'counterFourStars': counterFourStars,
-        'counterFiveStars': counterFiveStars,
+        'counterOneStars': starCounters[1]!,
+        'counterTwoStars': starCounters[2]!,
+        'counterThreeStars': starCounters[3]!,
+        'counterFourStars': starCounters[4]!,
+        'counterFiveStars': starCounters[5]!,
       };
     } catch (e) {
       if (e.toString().isNotEmpty) {
@@ -174,21 +203,6 @@ class EventViewModel with ChangeNotifier {
       return {};
     } finally {
       notifyListeners();
-    }
-  }
-
-  Future<bool> getParticipationStatusForUser(String userId, String eventId) async {
-    try {
-      bool isParticipated = await userService.getParticipationStatusForUser(userId, eventId);
-      errorMessages = [];
-      return isParticipated;
-    } catch (e) {
-      if (e.toString().isNotEmpty) {
-        errorMessages = [e.toString()];
-      } else {
-        errorMessages = [standardErrorMessage];
-      }
-      return false;
     }
   }
 

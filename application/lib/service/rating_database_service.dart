@@ -5,7 +5,7 @@ import '../model/event_dto.dart';
 class RatingDatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> addRating(RatingDTO ratingDTO) async {
+  Future<void> addRatingToDB(RatingDTO ratingDTO) async {
     try {
       QuerySnapshot existingRatings = await _firestore
           .collection('ratings')

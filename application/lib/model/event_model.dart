@@ -64,4 +64,17 @@ class EventModel {
       id: eventDTO.id,
     );
   }
+
+  void updateEventRatingsList(EventRatingModel newRating) {
+    var existingRating = ratings?.firstWhere(
+          (rating) => rating.userId == newRating.userId,
+      orElse: () => EventRatingModel(userId: newRating.userId, rating: 0.0),
+    );
+    if (existingRating != null) {
+      existingRating.rating = newRating.rating;
+    } else {
+      ratings?.add(newRating);
+    }
+  }
+
 }

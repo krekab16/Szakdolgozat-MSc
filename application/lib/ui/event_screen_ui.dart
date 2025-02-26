@@ -230,8 +230,8 @@ class _EventScreenState extends State<EventScreen> {
                                   return Text(mustParticipateText);
                                 }
                                 return FutureBuilder<double>(
-                                  future: eventViewModel.getMyRatingForEvent(userModel.id, widget.eventModel.id),
-                                  builder: (context, ratingSnapshot) {
+                                  future: eventViewModel.getMyRatingValueForEvent(userModel.id, widget.eventModel.id, userModel),
+                                  builder: (context,  AsyncSnapshot<double> ratingSnapshot) {
                                     double initialRating = ratingSnapshot.data ?? 0.0;
                                     return RatingBar.builder(
                                       minRating: 1,
@@ -245,7 +245,7 @@ class _EventScreenState extends State<EventScreen> {
                                         setState(() {
                                           initialRating = newRating;
                                         });
-                                        await eventViewModel.addRatingToEvent(userModel.id, widget.eventModel.id, newRating);
+                                        await eventViewModel.addRatingToEvent(userModel.id, widget.eventModel.id, newRating, userModel, widget.eventModel);
                                         if (eventViewModel.errorMessages.isEmpty) {
                                           Fluttertoast.showToast(msg: successfulRated);
                                         } else {
@@ -273,8 +273,8 @@ class _EventScreenState extends State<EventScreen> {
                         ),
                       ),
                       FutureBuilder<Map<String, dynamic>>(
-                        future: eventViewModel.getRatingValuesForEvent(widget.eventModel.id),
-                        builder: (context, ratingSnapshot) {
+                        future: eventViewModel.getRatingValuesForEvent(widget.eventModel.id, widget.eventModel),
+                        builder: (context, AsyncSnapshot<Map<String, dynamic>> ratingSnapshot) {
                           if (ratingSnapshot.hasData) {
                             var ratingData = ratingSnapshot.data;
                             double averageRating = ratingData?['average'] ?? 0.0;

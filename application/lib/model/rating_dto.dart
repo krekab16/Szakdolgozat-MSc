@@ -2,13 +2,13 @@ class RatingDTO {
   late String? ratingId;
   late String? eventId;
   late String? userId;
-  late double? rating;
+  late double rating;
 
   RatingDTO({
     this.ratingId,
     this.eventId,
     this.userId,
-    this.rating,
+    required this.rating,
   });
 
   Map<String, dynamic> toJson() {
