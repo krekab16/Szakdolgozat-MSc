@@ -1,4 +1,5 @@
 import 'package:application/model/user_dto.dart';
+import 'package:application/model/user_rating_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class UserModel with ChangeNotifier {
@@ -8,6 +9,7 @@ class UserModel with ChangeNotifier {
   late String password;
   late bool isOrganizer;
   List<String>? favorites;
+  List<UserRatingModel>? ratings;
   late String id;
 
   UserModel({
@@ -18,6 +20,7 @@ class UserModel with ChangeNotifier {
     required this.isOrganizer,
     required this.id,
     this.favorites,
+    this.ratings,
   });
 
   factory UserModel.createEmpty() {
@@ -28,7 +31,9 @@ class UserModel with ChangeNotifier {
         password: '',
         isOrganizer: false,
         id: '',
-        favorites: []);
+        favorites: [],
+        ratings: [],
+    );
   }
 
   UserDTO toDTO() {
@@ -63,6 +68,7 @@ class UserModel with ChangeNotifier {
     this.password = newModel.password;
     this.isOrganizer = newModel.isOrganizer;
     this.favorites = newModel.favorites;
+    this.ratings = newModel.ratings;
     notifyListeners();
   }
 
@@ -70,4 +76,21 @@ class UserModel with ChangeNotifier {
     this.isOrganizer = isOrganiser;
     notifyListeners();
   }
+
+  void addRating(UserRatingModel rating) {
+    ratings?.add(rating);
+  }
+
+  void updateUserRatingsList(UserRatingModel newRating) {
+    var existingRating = ratings?.firstWhere(
+          (rating) => rating.eventId == newRating.eventId,
+      orElse: () => UserRatingModel(eventId: newRating.eventId, rating: 0.0),
+    );
+    if (existingRating != null) {
+      existingRating.rating = newRating.rating;
+    } else {
+      ratings?.add(newRating);
+    }
+  }
+
 }
