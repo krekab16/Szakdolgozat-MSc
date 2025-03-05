@@ -105,4 +105,19 @@ class UserDatabaseService {
       throw Exception(e.message);
     }
   }
+
+  Future<bool> getParticipationStatusForUser(String userId, String eventId) async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('events')
+          .where('participants', arrayContains: userId)
+          .where(FieldPath.documentId, isEqualTo: eventId)
+          .get();
+
+      return snapshot.docs.isNotEmpty;
+    } on FirebaseException catch (e) {
+      throw Exception(e.message);
+    }
+  }
+
 }

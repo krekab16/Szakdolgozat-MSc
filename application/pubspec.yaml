@@ -50,6 +50,8 @@ dependencies:
   intl: ^0.19.0
   local_auth: ^2.3.0
   carousel_slider: ^5.0.0
+  flutter_rating_bar: ^4.0.1
+  rating_summary: ^1.0.4
 
 
 dev_dependencies:
