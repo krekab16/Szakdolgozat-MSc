@@ -1,8 +1,10 @@
 import 'package:application/model/event_rating_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'event_dto.dart';
+import 'event_favorite_model.dart';
 
-class EventModel {
+class EventModel with ChangeNotifier{
   String name;
   String address;
   String category;
@@ -12,6 +14,7 @@ class EventModel {
   String description;
   String id;
   List<EventRatingModel>? ratings;
+  List<EventFavoriteModel>? favorites;
 
   EventModel({
     required this.name,
@@ -23,6 +26,7 @@ class EventModel {
     required this.description,
     required this.id,
     this.ratings,
+    this.favorites,
   });
 
   factory EventModel.createEmpty() {
@@ -36,6 +40,7 @@ class EventModel {
       description: '',
       id: '',
       ratings: [],
+      favorites: [],
     );
   }
 
@@ -75,6 +80,19 @@ class EventModel {
     } else {
       ratings?.add(newRating);
     }
+  }
+
+  void updateEventFavoritesList(EventFavoriteModel eventFavoriteModel) {
+    var existingLikeIndex = favorites?.indexWhere((liked) => liked.userId == eventFavoriteModel.userId);
+    if (existingLikeIndex == -1) {
+      favorites?.add(eventFavoriteModel);
+    }
+    notifyListeners();
+  }
+
+  void removeEventFavorite(String userId) {
+    favorites?.removeWhere((liked) => liked.userId == userId);
+    notifyListeners();
   }
 
 }

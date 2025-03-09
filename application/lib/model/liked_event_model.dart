@@ -1,5 +1,5 @@
 import 'event_model.dart';
 
-class FavouriteEventModel {
+class LikedEventModel {
   List<EventModel> events = [];
 }

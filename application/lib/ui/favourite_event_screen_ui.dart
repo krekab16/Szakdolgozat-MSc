@@ -32,7 +32,7 @@ class _FavouriteEventScreenState extends State<FavouriteEventScreen> {
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: Column(
-                children: favouriteViewModel.favouriteEventModel.events
+                children: favouriteViewModel.likedEventModel.events
                     .map((event) => EventBox(event))
                     .toList(),
               ),

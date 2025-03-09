@@ -101,33 +101,6 @@ class EventDatabaseService {
     }
   }
 
-  Future<List<EventDTO>> getFavouriteEvent(String userId) async {
-    try {
-      final DocumentSnapshot snapshot =
-          await _firestore.collection('users').doc(userId).get();
-
-      final Map<String, dynamic>? data =
-          snapshot.data() as Map<String, dynamic>?;
-      final List<dynamic> favorites = data?['favorites'] ?? [];
-      final QuerySnapshot querySnapshot = await _firestore
-          .collection('events')
-          .where(FieldPath.documentId, whereIn: favorites)
-          .get();
-
-      final List<EventDTO> events =
-          await Future.wait(querySnapshot.docs.map((doc) async {
-        final data = doc.data() as Map<String, dynamic>;
-        return EventDTO.fromJson(data, doc.id);
-      }).toList());
-
-      return events;
-    } on FirebaseException catch (e) {
-      throw Exception(e.message);
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-
   Future<List<EventDTO>> getMyEvents(String userId) async {
     try {
       final QuerySnapshot querySnapshot = await _firestore

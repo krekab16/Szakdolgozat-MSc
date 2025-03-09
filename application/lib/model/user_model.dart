@@ -1,4 +1,5 @@
 import 'package:application/model/user_dto.dart';
+import 'package:application/model/user_favorite_model.dart';
 import 'package:application/model/user_rating_model.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -8,7 +9,7 @@ class UserModel with ChangeNotifier {
   late String email;
   late String password;
   late bool isOrganizer;
-  List<String>? favorites;
+  List<UserFavoriteModel>? favorites;
   List<UserRatingModel>? ratings;
   late String id;
 
@@ -43,7 +44,6 @@ class UserModel with ChangeNotifier {
       email: email,
       password: password,
       isOrganizer: isOrganizer,
-      favorites: favorites,
       id: id,
     );
   }
@@ -55,7 +55,6 @@ class UserModel with ChangeNotifier {
       email: userDTO.email,
       password: userDTO.password,
       isOrganizer: userDTO.isOrganizer,
-      favorites: userDTO.favorites,
       id: userDTO.id,
     );
   }
@@ -72,13 +71,19 @@ class UserModel with ChangeNotifier {
     notifyListeners();
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'username': username,
+      'email': email,
+      'password': password,
+      'isOrganizer': isOrganizer,
+    };
+  }
+
   void updateOrganiserState(bool isOrganiser) {
     this.isOrganizer = isOrganiser;
     notifyListeners();
-  }
-
-  void addRating(UserRatingModel rating) {
-    ratings?.add(rating);
   }
 
   void updateUserRatingsList(UserRatingModel newRating) {
@@ -93,4 +98,23 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  void addLike(UserFavoriteModel favorite) {
+    favorites?.add(favorite);
+  }
+
+  void updateUserFavoritesList(UserFavoriteModel userFavoriteModel) {
+    var existingLikeIndex = favorites?.indexWhere((liked) => liked.eventId == userFavoriteModel.eventId);
+    if (existingLikeIndex == -1) {
+      favorites?.add(userFavoriteModel);
+    }
+    notifyListeners();
+  }
+
+  void removeUserFavorite(String eventId) {
+    favorites?.removeWhere((liked) => liked.eventId == eventId);
+    notifyListeners();
+  }
+
 }
+
+
