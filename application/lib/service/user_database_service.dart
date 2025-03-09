@@ -120,4 +120,13 @@ class UserDatabaseService {
     }
   }
 
+  Future<String?> getAuthToken() async {
+    User? user = _firebaseAuth.currentUser;
+    if (user != null) {
+      String? token = await user.getIdToken();
+      return token;
+    }
+    return null;
+  }
+
 }

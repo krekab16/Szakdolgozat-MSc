@@ -22,6 +22,7 @@ import 'package:application/viewmodel/menu_view_model.dart';
 import 'package:application/viewmodel/participated_event_view_model.dart';
 import 'package:application/viewmodel/new_event_view_model.dart';
 import 'package:application/viewmodel/sign_up_screen_view_model.dart';
+import 'package:application/viewmodel/start_screen_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,12 +45,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => StartViewModel()),
         ChangeNotifierProvider(create: (_) => SignUpViewModel()),
         ChangeNotifierProvider(create: (_) => LogInViewModel()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => EventViewModel()),
         ChangeNotifierProvider(create: (_) => UserModel.createEmpty()),
         ChangeNotifierProvider(create: (_) => MenuViewModel()),
@@ -66,7 +70,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const StartScreen(),
+        home: const AutoLoginScreen(),
         routes: {
           startRoute: (context) => const StartScreen(),
           signUpRoute: (context) => const SignUpScreen(),
@@ -82,6 +86,28 @@ class _MyAppState extends State<MyApp> {
           ratedEventRoute: (context) => const RatedEventScreen(),
         },
       ),
+    );
+  }
+}
+
+class AutoLoginScreen extends StatelessWidget {
+  const AutoLoginScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: Provider.of<StartViewModel>(context, listen: false).checkAutoLogin(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData && snapshot.data == true) {
+            return const HomeScreen();
+          } else {
+            return const StartScreen();
+          }
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }

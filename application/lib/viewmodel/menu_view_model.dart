@@ -4,6 +4,7 @@ import 'package:application/viewmodel/participated_event_view_model.dart';
 import 'package:application/viewmodel/rated_event_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../service/user_database_service.dart';
 import '../ui/favourite_event_screen_ui.dart';
 import '../ui/profile_screen_ui.dart';
@@ -68,7 +69,7 @@ class MenuViewModel with ChangeNotifier {
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider(
           create: (context) =>
-              FavouriteEventViewModel()..fetchFavouriteEvent(userId),
+          FavouriteEventViewModel()..fetchFavouriteEvent(userId),
           child: const FavouriteEventScreen(),
         ),
       ),
@@ -106,8 +107,11 @@ class MenuViewModel with ChangeNotifier {
   }
 
 
-  void logOut(BuildContext context) {
-    Navigator.popUntil(context, ModalRoute.withName('/'));
-    Navigator.pushNamed(context, startRoute);
+  Future<void> logOut(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+    await prefs.remove('user_id');
+    Navigator.pushNamedAndRemoveUntil(context, startRoute, (route) => false);
   }
+
 }
