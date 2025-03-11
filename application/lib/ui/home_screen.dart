@@ -6,6 +6,7 @@ import '../utils/styles.dart';
 import '../utils/text_strings.dart';
 import '../viewmodel/home_view_model.dart';
 import 'menu_ui.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,29 +35,44 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Column(
-                  children: [
-                if (homeViewModel.errorMessages.isNotEmpty)...[
-                  Text(homeViewModel.errorMessages.join(' ')),
-                ] else ...[
-                  Column(
-                    children: homeViewModel.homeModel.events
-                        .map((event) => EventBox(event))
-                        .toList(),
-                  )
-                ]
-              ]),
-            ),
-          ],
+        body: Container(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              if (homeViewModel.errorMessages.isNotEmpty)...[
+                Text(homeViewModel.errorMessages.join(' ')),
+              ] else ...[
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: 200.0,
+                    autoPlay: true,
+                    autoPlayInterval: Duration(seconds: 3),
+                    enlargeCenterPage: true,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.8,
+                  ),
+                  items: homeViewModel.homeModel.events.map((event) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return EventBox(event);
+                      },
+                    );
+                  }).toList(),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(top: 10),
+                    itemCount: homeViewModel.homeModel.events.length,
+                    itemBuilder: (context, index) {
+                      return EventBox(homeViewModel.homeModel.events[index]);
+                    },
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
-      ),
-      drawer: const Menu(),
+        drawer: const Menu(),
     );
   }
 }
