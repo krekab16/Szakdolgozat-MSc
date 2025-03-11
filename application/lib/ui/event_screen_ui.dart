@@ -31,8 +31,8 @@ class _EventScreenState extends State<EventScreen> {
     final userModel = Provider.of<UserModel>(context);
     return Scaffold(
       body: FutureBuilder<bool>(
-        future: eventViewModel.getEventWithFavoriteStatus(
-            userModel, widget.eventModel.id),
+        future: eventViewModel.getMyLikeForEvent(
+            userModel.id, widget.eventModel.id, userModel),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData) {
             _isFavorite = snapshot.data ?? false;
@@ -63,7 +63,7 @@ class _EventScreenState extends State<EventScreen> {
                             ),
                             onPressed: () {
                               eventViewModel.updateEvent(widget.eventModel);
-                              eventViewModel.updateUser(userModel);
+                              // eventViewModel.updateUser(userModel);
                               if (eventViewModel.errorMessages.isEmpty) {
                                 eventViewModel.navigateBack(context);
                               } else {
@@ -172,49 +172,35 @@ class _EventScreenState extends State<EventScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                bool newFavoriteStatus = !_isFavorite;
+                                if (newFavoriteStatus) {
+                                  await eventViewModel.addLikeToEvent(userModel.id, widget.eventModel.id, userModel, widget.eventModel);
+                                } else {
+                                  await eventViewModel.removeLikeFromEvent(userModel.id, widget.eventModel.id, userModel, widget.eventModel);
+                                }
                                 setState(() {
-                                  _isFavorite = !_isFavorite;
-                                  if (_isFavorite) {
-                                    eventViewModel.addFavouriteEvent(userModel, widget.eventModel.id);
-                                    if (eventViewModel.errorMessages.isEmpty) {
-                                      Fluttertoast.showToast(msg: successfulAddToFavoritesMessage);
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                          title: Text(errorDialogTitle, style: Styles.errorText),
-                                          content: Text(eventViewModel.errorMessages.join(" "), style: Styles.errorText),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(context),
-                                              child: Text(close),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  } else {
-                                    eventViewModel.removeFavouriteEvent(userModel, widget.eventModel.id);
-                                    if (eventViewModel.errorMessages.isEmpty) {
-                                      Fluttertoast.showToast(msg: successfulRemoveFromFavoritesMessage);
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                          title: Text(errorDialogTitle, style: Styles.errorText),
-                                          content: Text(eventViewModel.errorMessages.join(" "), style: Styles.errorText),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(context),
-                                              child: Text(close),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  }
+                                  _isFavorite = newFavoriteStatus;
                                 });
+                                if (eventViewModel.errorMessages.isEmpty) {
+                                  Fluttertoast.showToast(
+                                    msg: newFavoriteStatus ? successfulAddToFavoritesMessage : successfulRemoveFromFavoritesMessage,
+                                  );
+                                } else {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text(errorDialogTitle, style: Styles.errorText),
+                                      content: Text(eventViewModel.errorMessages.join(" "), style: Styles.errorText),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: Text(close),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
                               },
                               child: Icon(
                                 Icons.favorite,

@@ -1,10 +1,14 @@
 import 'package:application/model/event_model.dart';
 import 'package:application/model/rating_dto.dart';
+import 'package:application/model/user_favorite_model.dart';
 import 'package:application/model/user_model.dart';
 import 'package:application/model/user_rating_model.dart';
 import 'package:flutter/widgets.dart';
+import '../model/event_favorite_model.dart';
 import '../model/event_rating_model.dart';
+import '../model/favorite_dto.dart';
 import '../service/event_database_service.dart';
+import '../service/favorite_database_service.dart';
 import '../service/rating_database_service.dart';
 import '../service/user_database_service.dart';
 import '../utils/text_strings.dart';
@@ -13,26 +17,19 @@ class EventViewModel with ChangeNotifier {
   final EventDatabaseService service = EventDatabaseService();
   final RatingDatabaseService ratingService = RatingDatabaseService();
   final UserDatabaseService userService = UserDatabaseService();
+  final FavoriteDatabaseService favoriteService = FavoriteDatabaseService();
+
 
   List<String> errorMessages = [];
 
-  Future<void> addFavouriteEvent(UserModel userModel, String eventId) async {
-    userModel.favorites?.add(eventId);
-    notifyListeners();
-  }
-
-  Future<void> removeFavouriteEvent(UserModel userModel, String eventId) async {
-    userModel.favorites?.remove(eventId);
-    notifyListeners();
-  }
-
-  Future<bool> getEventWithFavoriteStatus(UserModel userModel, String eventId) async {
-    return userModel.favorites?.contains(eventId) ?? false;
-  }
-
-  Future<void> updateEvent(EventModel eventModel) async {
+  Future<void> addLikeToEvent(String userId, String eventId, UserModel userModel, EventModel eventModel) async {
     try {
-      await service.updateEvent(eventModel.toDTO());
+      FavoriteDTO favoriteDTO = FavoriteDTO(userId: userId, eventId: eventId);
+      await favoriteService.addLikeToDB(favoriteDTO);
+      UserFavoriteModel newUserLike = UserFavoriteModel(eventId: eventId);
+      userModel.updateUserFavoritesList(newUserLike);
+      EventFavoriteModel newEventLike = EventFavoriteModel(userId: userId);
+      eventModel.updateEventFavoritesList(newEventLike);
       errorMessages = [];
     } catch (e) {
       if (e.toString().isNotEmpty) {
@@ -41,11 +38,51 @@ class EventViewModel with ChangeNotifier {
         errorMessages = [standardErrorMessage];
       }
     }
+    notifyListeners();
   }
 
-  Future<void> updateUser(UserModel userModel) async {
+  Future<bool> getMyLikeForEvent(String userId, String eventId, UserModel userModel) async {
     try {
-      await userService.updateUser(userModel.toDTO());
+      UserFavoriteModel? userLike = userModel.favorites?.firstWhere(
+            (like) => like.eventId == eventId,
+        orElse: () => UserFavoriteModel(eventId: eventId),
+      );
+      bool isLiked = await favoriteService.getMyLike(userId, eventId);
+      if (isLiked && userLike == null) {
+        UserFavoriteModel newUserLike = UserFavoriteModel(eventId: eventId);
+        userModel.updateUserFavoritesList(newUserLike);
+      }
+      errorMessages = [];
+      return isLiked;
+    } catch (e) {
+      errorMessages = [standardErrorMessage];
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+
+  Future<void> removeLikeFromEvent(String userId, String eventId, UserModel userModel, EventModel eventModel) async {
+    try {
+      await favoriteService.removeLikeFromDB(userId, eventId);
+      userModel.removeUserFavorite(eventId);
+      eventModel.removeEventFavorite(userId);
+      errorMessages = [];
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+    }
+    notifyListeners();
+  }
+
+
+  Future<void> updateEvent(EventModel eventModel) async {
+    try {
+      await service.updateEvent(eventModel.toDTO());
       errorMessages = [];
     } catch (e) {
       if (e.toString().isNotEmpty) {
