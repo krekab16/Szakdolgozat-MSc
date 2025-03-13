@@ -1,3 +1,4 @@
+import 'package:application/ui/auto_login_screen.dart';
 import 'package:application/ui/face_id_screen_ui.dart';
 import 'package:application/ui/favourite_event_screen_ui.dart';
 import 'package:application/ui/home_screen.dart';
@@ -11,6 +12,7 @@ import 'package:application/ui/sign_up_screen_ui.dart';
 import 'package:application/ui/start_screen_ui.dart';
 import 'package:application/utils/route_constants.dart';
 import 'package:application/utils/text_strings.dart';
+import 'package:application/viewmodel/auto_login_view_model.dart';
 import 'package:application/viewmodel/created_event_screen_view_model.dart';
 import 'package:application/viewmodel/event_view_model.dart';
 import 'package:application/viewmodel/faceid_view_model.dart';
@@ -22,18 +24,19 @@ import 'package:application/viewmodel/menu_view_model.dart';
 import 'package:application/viewmodel/participated_event_view_model.dart';
 import 'package:application/viewmodel/new_event_view_model.dart';
 import 'package:application/viewmodel/sign_up_screen_view_model.dart';
-import 'package:application/viewmodel/start_screen_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'model/user_model.dart';
+import 'my_shared_preference.dart';
 
 void  main()  async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await MySharedPreference().initPrefs();
   runApp(const MyApp());
 }
 
@@ -50,7 +53,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => StartViewModel()),
+        ChangeNotifierProvider(create: (_) => AutoLoginViewModel()),
         ChangeNotifierProvider(create: (_) => SignUpViewModel()),
         ChangeNotifierProvider(create: (_) => LogInViewModel()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
@@ -84,30 +87,9 @@ class _MyAppState extends State<MyApp> {
           mapRoute: (context) => const MapScreen(),
           faceIdRoute: (context) => const FaceIdScreen(),
           ratedEventRoute: (context) => const RatedEventScreen(),
+          autoLoginRoute: (context) => const AutoLoginScreen(),
         },
       ),
-    );
-  }
-}
-
-class AutoLoginScreen extends StatelessWidget {
-  const AutoLoginScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: Provider.of<StartViewModel>(context, listen: false).checkAutoLogin(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData && snapshot.data == true) {
-            return const HomeScreen();
-          } else {
-            return const StartScreen();
-          }
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
     );
   }
 }

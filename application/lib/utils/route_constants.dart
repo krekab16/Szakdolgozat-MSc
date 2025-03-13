@@ -12,3 +12,4 @@ const String favouriteEventsRoute = '/favourites';
 const String participatedEventRoute = '/participate';
 const String mapRoute = '/map';
 const String ratedEventRoute = '/rated_event';
+const String autoLoginRoute = '/auto_login';

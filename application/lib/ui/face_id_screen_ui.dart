@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../model/user_model.dart';
 import '../utils/colors.dart';
 import '../utils/image_strings.dart';
 import '../utils/styles.dart';
 import '../utils/text_strings.dart';
 import '../viewmodel/faceid_view_model.dart';
+import 'home_screen.dart';
 
 class FaceIdScreen extends StatefulWidget {
   const FaceIdScreen({Key? key}) : super(key: key);
@@ -18,6 +20,7 @@ class _FaceIdScreenState extends State<FaceIdScreen> {
   @override
   Widget build(BuildContext context) {
     final faceIdViewModel = Provider.of<FaceIdViewModel>(context);
+    var userModel = Provider.of<UserModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -31,45 +34,18 @@ class _FaceIdScreenState extends State<FaceIdScreen> {
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: GestureDetector(
-                onTap: () async {
-                  await faceIdViewModel.authenticateUser();
-                  if (faceIdViewModel.isUserAuthorized) {
-                    faceIdViewModel.navigateToHome(context);
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: Text(
-                          errorDialogTitle,
-                          style: Styles.errorText,
-                        ),
-                        content: Text(
-                          faceIdViewModel.errorMessages.join(" "),
-                          style: Styles.errorText,
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text(close),
-                          )
-                        ],
-                      ),
-                    );
-                  }
-                },
-                child: Image.asset(
-                  faceIdImage,
-                  height: 160,
-                ),
-              ),
-            ),
-          ],
+        child: FutureBuilder<UserModel>(
+          future: faceIdViewModel.authenticateUser(userModel),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                userModel.updateUser(snapshot.data!);
+              });
+              return const HomeScreen();
+            } else {
+              return const SizedBox();
+            }
+          },
         ),
       ),
     );

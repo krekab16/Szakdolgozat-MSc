@@ -102,7 +102,8 @@ class _LogInScreen extends State<LogInScreen> {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState?.save();
                           userModel.updateUser(
-                              await logInViewModel.login(userModel));
+                              await logInViewModel.login(userModel)
+                          );
                           if (logInViewModel.errorMessages.isEmpty) {
                             logInViewModel.navigateToHome(context);
                           } else {

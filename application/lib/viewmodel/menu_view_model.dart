@@ -109,9 +109,13 @@ class MenuViewModel with ChangeNotifier {
 
   Future<void> logOut(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     await prefs.remove('auth_token');
     await prefs.remove('user_id');
+    await prefs.remove('user_data');
+
     Navigator.pushNamedAndRemoveUntil(context, startRoute, (route) => false);
   }
+
 
 }
