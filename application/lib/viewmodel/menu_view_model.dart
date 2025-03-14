@@ -1,10 +1,10 @@
 import 'package:application/ui/rated_event_screen_ui.dart';
+import 'package:application/user_login_singleton.dart';
 import 'package:application/viewmodel/profile_view_model.dart';
 import 'package:application/viewmodel/participated_event_view_model.dart';
 import 'package:application/viewmodel/rated_event_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../service/user_database_service.dart';
 import '../ui/favourite_event_screen_ui.dart';
 import '../ui/profile_screen_ui.dart';
@@ -17,6 +17,7 @@ import 'created_event_screen_view_model.dart';
 
 class MenuViewModel with ChangeNotifier {
   final UserDatabaseService service = UserDatabaseService();
+  UserLoginSingleton userLoginSingleton = UserLoginSingleton();
 
   List<String> errorMessages = [];
 
@@ -106,16 +107,9 @@ class MenuViewModel with ChangeNotifier {
     );
   }
 
-
   Future<void> logOut(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await prefs.remove('auth_token');
-    await prefs.remove('user_id');
-    await prefs.remove('user_data');
-
+    userLoginSingleton.deleteSharedPreferences();
     Navigator.pushNamedAndRemoveUntil(context, startRoute, (route) => false);
   }
-
 
 }

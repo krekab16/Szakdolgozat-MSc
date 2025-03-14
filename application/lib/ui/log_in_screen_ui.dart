@@ -130,13 +130,6 @@ class _LogInScreen extends State<LogInScreen> {
                         }
                       }),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: MyButton(logInWithFaceID, () async {
-                        logInViewModel.navigateToFaceId(context);
-                      }),
-                    ),
-
                   ],
                 ),
               ),

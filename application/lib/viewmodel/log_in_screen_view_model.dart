@@ -22,6 +22,7 @@ class LogInViewModel with ChangeNotifier {
         UserLoginSingleton().setRememberedUserToken(token!);
         UserLoginSingleton().setRememberedUserId(newUser.id);
         UserLoginSingleton().setRememberedUserData(newUser);
+        UserLoginSingleton().setRememberMe(rememberMe);
       }
     } catch (e) {
       if (e.toString().isNotEmpty) {
@@ -36,10 +37,6 @@ class LogInViewModel with ChangeNotifier {
 
   void navigateToHome(BuildContext context) {
     Navigator.pushNamed(context, homeRoute);
-  }
-
-  void navigateToFaceId(BuildContext context) {
-    Navigator.pushNamed(context, faceIdRoute);
   }
 
   String? validateEmail(String value) {
@@ -59,6 +56,5 @@ class LogInViewModel with ChangeNotifier {
     }
     return null;
   }
-
 
 }

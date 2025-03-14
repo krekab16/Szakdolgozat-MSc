@@ -4,45 +4,52 @@ import 'model/user_model.dart';
 
 class MySharedPreference {
 
-  static SharedPreferences? _prefs;
+  static SharedPreferences? prefs;
   MySharedPreference._();
-  static final MySharedPreference _instance = MySharedPreference._();
+  static final MySharedPreference instance = MySharedPreference._();
 
   factory MySharedPreference() {
-    return _instance;
+    return instance;
   }
 
   Future<void> initPrefs() async {
-    _prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
   }
 
   String? getToken() {
-    return _prefs?.getString('auth_token');
+    return prefs?.getString('auth_token');
   }
 
   String? getUserId() {
-    return _prefs?.getString('user_id');
+    return prefs?.getString('user_id');
   }
 
   String? getUserData() {
-    return _prefs?.getString('user_data');
+    return prefs?.getString('user_data');
   }
 
+  bool? getRememberMe(){
+    return prefs?.getBool('remember_me') ?? false;
+  }
 
   Future<void> setToken(String token) async {
-    await _prefs?.setString('auth_token', token);
-    print("Token elmentve: ${MySharedPreference().getToken()}");
+    await prefs?.setString('auth_token', token);
   }
 
   Future<void> setUserId(String userId) async {
-    await _prefs?.setString('user_id', userId);
-    print("UserID elmentve: ${MySharedPreference().getUserId()}");
-
+    await prefs?.setString('user_id', userId);
   }
 
   Future<void> setUserData(UserModel userModel) async {
-    await _prefs?.setString('user_data', jsonEncode(userModel.toDTO().toJson()));
-    print("User elmentve: ${MySharedPreference().getUserData()}");
+    await prefs?.setString('user_data', jsonEncode(userModel.toDTO().toJson()));
+  }
+
+  Future<void> setRememberMe(bool value) async {
+    await prefs?.setBool('remember_me', value);
+  }
+
+  Future<void> deleteSharedPreferences() async {
+    await prefs?.clear();
   }
 
 }

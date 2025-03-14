@@ -6,6 +6,7 @@ class UserLoginSingleton {
   String? getToken = MySharedPreference().getToken();
   String? getUserData = MySharedPreference().getUserData();
   String? getUserId = MySharedPreference().getUserId();
+  bool? getIsRememberMe = MySharedPreference().getRememberMe();
 
 
   void setRememberedUserToken(String newToken) {
@@ -20,6 +21,14 @@ class UserLoginSingleton {
     MySharedPreference().setUserData(newUserData);
   }
 
+  void setRememberMe(bool isRememberMe) {
+    MySharedPreference().setRememberMe(isRememberMe);
+  }
+
+  void deleteSharedPreferences(){
+    MySharedPreference().deleteSharedPreferences();
+  }
+
   String? getRememberedUserToken() {
     return getToken;
   }
@@ -30,6 +39,10 @@ class UserLoginSingleton {
 
   String? getRememberedUserData() {
     return getUserData;
+  }
+
+  bool? getRememberMe() {
+    return getIsRememberMe;
   }
 
 }

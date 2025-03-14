@@ -129,4 +129,15 @@ class UserDatabaseService {
     return null;
   }
 
+  Future<bool> hasValidRefreshToken() async {
+    User? user = _firebaseAuth.currentUser;
+    if (user == null) return false;
+    try {
+      await user.getIdToken(true);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
 }

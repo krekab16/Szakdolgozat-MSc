@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../model/user_model.dart';
 import '../utils/colors.dart';
-import '../utils/image_strings.dart';
 import '../utils/styles.dart';
 import '../utils/text_strings.dart';
 import '../viewmodel/faceid_view_model.dart';
-import 'home_screen.dart';
 
 class FaceIdScreen extends StatefulWidget {
   const FaceIdScreen({Key? key}) : super(key: key);
@@ -40,11 +39,39 @@ class _FaceIdScreenState extends State<FaceIdScreen> {
             if (snapshot.hasData) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 userModel.updateUser(snapshot.data!);
+                faceIdViewModel.navigateToHome(context);
               });
-              return const HomeScreen();
-            } else {
-              return const SizedBox();
+              if (faceIdViewModel.errorMessages.isEmpty) {
+                Fluttertoast.showToast(
+                    msg: successfulRemoveFromParticipationMessage);
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: Text(
+                      errorDialogTitle,
+                      style: Styles.errorText,
+                    ),
+                    content: Text(
+                      faceIdViewModel.errorMessages.join(" "),
+                      style: Styles.errorText,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(close),
+                      )
+                    ],
+                  ),
+                );
+              }
             }
+            if (snapshot.hasError) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                faceIdViewModel.navigateToLogIn(context);
+              });
+            }
+            return const SizedBox();
           },
         ),
       ),
