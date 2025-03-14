@@ -23,7 +23,7 @@ class HomeViewModel with ChangeNotifier {
     try {
       final List<EventDTO> eventDTO = await service.getEvents();
       final List<EventModel> eventModel =
-          eventDTO.map((dto) => EventModel.fromDTO(dto)).toList();
+      eventDTO.map((dto) => EventModel.fromDTO(dto)).toList();
       homeModel.events = eventModel;
       errorMessages = [];
     } catch (e) {

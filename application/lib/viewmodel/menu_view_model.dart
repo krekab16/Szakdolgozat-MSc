@@ -1,4 +1,5 @@
 import 'package:application/ui/rated_event_screen_ui.dart';
+import 'package:application/user_login_singleton.dart';
 import 'package:application/viewmodel/profile_view_model.dart';
 import 'package:application/viewmodel/participated_event_view_model.dart';
 import 'package:application/viewmodel/rated_event_view_model.dart';
@@ -16,6 +17,7 @@ import 'created_event_screen_view_model.dart';
 
 class MenuViewModel with ChangeNotifier {
   final UserDatabaseService service = UserDatabaseService();
+  UserLoginSingleton userLoginSingleton = UserLoginSingleton();
 
   List<String> errorMessages = [];
 
@@ -68,7 +70,7 @@ class MenuViewModel with ChangeNotifier {
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider(
           create: (context) =>
-              FavouriteEventViewModel()..fetchFavouriteEvent(userId),
+          FavouriteEventViewModel()..fetchFavouriteEvent(userId),
           child: const FavouriteEventScreen(),
         ),
       ),
@@ -105,9 +107,9 @@ class MenuViewModel with ChangeNotifier {
     );
   }
 
-
-  void logOut(BuildContext context) {
-    Navigator.popUntil(context, ModalRoute.withName('/'));
-    Navigator.pushNamed(context, startRoute);
+  Future<void> logOut(BuildContext context) async {
+    userLoginSingleton.deleteSharedPreferences();
+    Navigator.pushNamedAndRemoveUntil(context, startRoute, (route) => false);
   }
+
 }

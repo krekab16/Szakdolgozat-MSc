@@ -16,10 +16,12 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+
   @override
   Widget build(BuildContext context) {
     final menuViewModel = Provider.of<MenuViewModel>(context);
     final userModel = Provider.of<UserModel>(context);
+
     return Drawer(
       child: Column(
         children: [

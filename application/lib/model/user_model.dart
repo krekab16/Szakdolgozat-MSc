@@ -12,6 +12,8 @@ class UserModel with ChangeNotifier {
   List<UserFavoriteModel>? favorites;
   List<UserRatingModel>? ratings;
   late String id;
+  late String? token;
+
 
   UserModel({
     required this.name,
@@ -22,6 +24,7 @@ class UserModel with ChangeNotifier {
     required this.id,
     this.favorites,
     this.ratings,
+    this.token,
   });
 
   factory UserModel.createEmpty() {
@@ -56,6 +59,7 @@ class UserModel with ChangeNotifier {
       password: userDTO.password,
       isOrganizer: userDTO.isOrganizer,
       id: userDTO.id,
+      token: userDTO.token,
     );
   }
 
