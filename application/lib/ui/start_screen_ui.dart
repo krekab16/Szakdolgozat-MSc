@@ -33,15 +33,15 @@ class _StartScreen extends State<StartScreen> {
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                      Image(
-                        image: AssetImage(welcomeImage),
-                        height: 160,
-                      ),
-                      Text(
-                        appName,
-                        style: Styles.welcomeApplicationNameStyle,
-                      ),
-                    ]),
+                          Image(
+                            image: AssetImage(welcomeImage),
+                            height: 160,
+                          ),
+                          Text(
+                            appName,
+                            style: Styles.welcomeApplicationNameStyle,
+                          ),
+                        ]),
                     Padding(
                       padding: const EdgeInsets.all(5),
                       child: Text(

@@ -1,3 +1,4 @@
+import 'package:application/ui/splash_screen.dart';
 import 'package:application/ui/face_id_screen_ui.dart';
 import 'package:application/ui/favourite_event_screen_ui.dart';
 import 'package:application/ui/home_screen.dart';
@@ -11,6 +12,7 @@ import 'package:application/ui/sign_up_screen_ui.dart';
 import 'package:application/ui/start_screen_ui.dart';
 import 'package:application/utils/route_constants.dart';
 import 'package:application/utils/text_strings.dart';
+import 'package:application/viewmodel/splash_screen_view_model.dart';
 import 'package:application/viewmodel/created_event_screen_view_model.dart';
 import 'package:application/viewmodel/event_view_model.dart';
 import 'package:application/viewmodel/faceid_view_model.dart';
@@ -27,12 +29,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'model/user_model.dart';
+import 'my_shared_preference.dart';
 
 void  main()  async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await MySharedPreference().initPrefs();
   runApp(const MyApp());
 }
 
@@ -44,12 +48,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => SplashScreenViewModel()),
         ChangeNotifierProvider(create: (_) => SignUpViewModel()),
         ChangeNotifierProvider(create: (_) => LogInViewModel()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => EventViewModel()),
         ChangeNotifierProvider(create: (_) => UserModel.createEmpty()),
         ChangeNotifierProvider(create: (_) => MenuViewModel()),
@@ -66,7 +73,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const StartScreen(),
+        home: const SplashScreen(),
         routes: {
           startRoute: (context) => const StartScreen(),
           signUpRoute: (context) => const SignUpScreen(),
@@ -80,6 +87,7 @@ class _MyAppState extends State<MyApp> {
           mapRoute: (context) => const MapScreen(),
           faceIdRoute: (context) => const FaceIdScreen(),
           ratedEventRoute: (context) => const RatedEventScreen(),
+          splashScreenRoute: (context) => const SplashScreen(),
         },
       ),
     );

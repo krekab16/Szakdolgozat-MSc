@@ -8,7 +8,6 @@ import '../utils/password_input_box.dart';
 import '../utils/styles.dart';
 import '../utils/text_strings.dart';
 import '../viewmodel/log_in_screen_view_model.dart';
-import 'face_id_screen_ui.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({Key? key}) : super(key: key);
@@ -51,16 +50,16 @@ class _LogInScreen extends State<LogInScreen> {
                         Icons.mail,
                       ),
                       email,
-                      (email) => {userModel.email = email},
-                      (value) => logInViewModel.validateEmail(value!),
+                          (email) => {userModel.email = email},
+                          (value) => logInViewModel.validateEmail(value!),
                     ),
                     PasswordInputBox(
                         const Icon(
                           Icons.vpn_key,
                         ),
                         password,
-                        (password) => {userModel.password = password},
-                        (value) => logInViewModel.validatePassword(value!),
+                            (password) => {userModel.password = password},
+                            (value) => logInViewModel.validatePassword(value!),
                         passwordVisible,
                         IconButton(
                           icon: Icon(passwordVisible
@@ -68,7 +67,7 @@ class _LogInScreen extends State<LogInScreen> {
                               : Icons.visibility),
                           onPressed: () {
                             setState(
-                              () {
+                                  () {
                                 passwordVisible = !passwordVisible;
                               },
                             );
@@ -76,44 +75,61 @@ class _LogInScreen extends State<LogInScreen> {
                         )),
                     Padding(
                       padding: const EdgeInsets.all(5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          SizedBox(width: 10),
+                          Text(
+                            rememberMe,
+                            style: TextStyle(fontSize: 17.0),
+                          ),
+                          SizedBox(width: 10),
+                          Checkbox(
+                            tristate: false,
+                            value: logInViewModel.rememberMe,
+                            onChanged: (bool? newValue) {
+                              setState(() {
+                                logInViewModel.rememberMe = newValue!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(5),
                       child: MyButton(logIn, () async {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState?.save();
                           userModel.updateUser(
-                              await logInViewModel.login(userModel));
+                              await logInViewModel.login(userModel)
+                          );
                           if (logInViewModel.errorMessages.isEmpty) {
                             logInViewModel.navigateToHome(context);
                           } else {
                             showDialog(
                                 context: context,
                                 builder: (_) => AlertDialog(
-                                      title: Text(
-                                        errorDialogTitle,
-                                        style: Styles.errorText,
-                                      ),
-                                      content: Text(
-                                        logInViewModel.errorMessages.join(" "),
-                                        style: Styles.errorText,
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: Text(close),
-                                        )
-                                      ],
-                                    ));
+                                  title: Text(
+                                    errorDialogTitle,
+                                    style: Styles.errorText,
+                                  ),
+                                  content: Text(
+                                    logInViewModel.errorMessages.join(" "),
+                                    style: Styles.errorText,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context),
+                                      child: Text(close),
+                                    )
+                                  ],
+                                ));
                           }
                         }
                       }),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: MyButton(logInWithFaceID, () async {
-                          logInViewModel.navigateToFaceId(context);
-                      }),
-                    ),
-
                   ],
                 ),
               ),

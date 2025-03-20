@@ -6,6 +6,7 @@ class UserDTO {
   late bool isOrganizer;
   List<String>? favorites;
   late String id;
+  late String? token;
 
   UserDTO({
     required this.name,
@@ -15,6 +16,7 @@ class UserDTO {
     required this.isOrganizer,
     required this.id,
     this.favorites,
+    this.token,
   });
 
   Map<String, dynamic> toJson() {
@@ -37,6 +39,7 @@ class UserDTO {
       isOrganizer: json['isOrganizer'],
       favorites: List<String>.from(json['favorites'] as List),
       id: id,
+      token: json['token'],
     );
   }
 }

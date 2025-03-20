@@ -52,6 +52,7 @@ dependencies:
   carousel_slider: ^5.0.0
   flutter_rating_bar: ^4.0.1
   rating_summary: ^1.0.4
+  shared_preferences: ^2.5.2
 
 
 dev_dependencies:
