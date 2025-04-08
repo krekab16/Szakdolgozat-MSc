@@ -2,11 +2,13 @@ import 'package:application/model/event_model.dart';
 import 'package:flutter/material.dart';
 import '../model/event_dto.dart';
 import '../model/participated_event_model.dart';
+import '../model/recommended_event_model.dart';
 import '../service/event_database_service.dart';
 import '../utils/text_strings.dart';
 
 class ParticipatedEventViewModel with ChangeNotifier {
   ParticipatedEventModel participatedEventModel = ParticipatedEventModel();
+  RecommendedEventModel recommendedEvents = RecommendedEventModel();
 
   final EventDatabaseService service = EventDatabaseService();
 
@@ -29,4 +31,23 @@ class ParticipatedEventViewModel with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> fetchRecommendedEvents(String userId) async {
+    try {
+      final List<EventDTO> eventDTO =
+      await service.getRecommendedEventsForUser(userId);
+      final List<EventModel> eventModel =
+      eventDTO.map((dto) => EventModel.fromDTO(dto)).toList();
+      recommendedEvents.events = eventModel;
+      errorMessages = [];
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+    }
+    notifyListeners();
+  }
+
 }

@@ -57,7 +57,9 @@ class MenuViewModel with ChangeNotifier {
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider(
           create: (context) =>
-          ParticipatedEventViewModel()..fetchParticipatedEvent(userId),
+          ParticipatedEventViewModel()
+            ..fetchParticipatedEvent(userId)
+            ..fetchRecommendedEvents(userId),
           child: const ParticipatedEventScreen(),
         ),
       ),
