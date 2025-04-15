@@ -165,25 +165,20 @@ class EventDatabaseService {
 
   Future<List<EventDTO>> getRecommendedEventsForUser(String userId) async {
     try {
-      final QuerySnapshot userEventsSnapshot = await _firestore
+      final userEventsSnapshot = await _firestore
           .collection('events')
           .where('participants', arrayContains: userId)
           .get();
-
-      final List<EventDTO> userEvents = await Future.wait(
-        userEventsSnapshot.docs.map((doc) async {
-          final data = doc.data() as Map<String, dynamic>;
-          return EventDTO.fromJson(data, doc.id);
-        }).toList(),
-      );
-      final filteredUserEvents = userEvents.where((e) => e.embeddingVector!.isNotEmpty).toList();
-      final QuerySnapshot allEventsSnapshot = await _firestore.collection('events').get();
-      final List<EventDTO> allEvents = await Future.wait(
-        allEventsSnapshot.docs.map((doc) async {
-          final data = doc.data() as Map<String, dynamic>;
-          return EventDTO.fromJson(data, doc.id);
-        }).toList(),
-      );
+      final List<EventDTO> userEvents = [];
+      for (var doc in userEventsSnapshot.docs) {
+        final data = doc.data();
+        final event = EventDTO.fromJson(data, doc.id);
+        userEvents.add(event);
+      }
+      final filteredUserEvents = userEvents
+          .where((e) => e.embeddingVector != null && e.embeddingVector!.isNotEmpty)
+          .toList();
+      if (filteredUserEvents.isEmpty) return [];
       List<double> averageVector = List.filled(filteredUserEvents[0].embeddingVector!.length, 0.0);
       for (var event in filteredUserEvents) {
         for (int i = 0; i < event.embeddingVector!.length; i++) {
@@ -191,15 +186,49 @@ class EventDatabaseService {
         }
       }
       averageVector = averageVector.map((val) => val / filteredUserEvents.length).toList();
-      List<EventDTO> recommendations = [];
+      final allEventsSnapshot = await _firestore.collection('events').get();
+      final List<EventDTO> allEvents = [];
+      for (var doc in allEventsSnapshot.docs) {
+        final data = doc.data();
+        final event = EventDTO.fromJson(data, doc.id);
+        allEvents.add(event);
+      }
+      final List<Map<String, dynamic>> scoredEvents = [];
       for (var event in allEvents) {
-        if (userEvents.any((e) => e.id == event.id)) continue;
-        if (event.embeddingVector!.isEmpty) continue;
-        double similarity = cosineSimilarity.cosineSimilarity(averageVector, event.embeddingVector!);
-        if (similarity > 0.2) {
-          recommendations.add(event);
+        final bool isAlreadyAttended = userEvents.any((e) => e.id == event.id);
+        final bool hasValidEmbedding = event.embeddingVector != null &&
+            event.embeddingVector!.isNotEmpty &&
+            event.embeddingVector!.length == averageVector.length;
+        if (!isAlreadyAttended && hasValidEmbedding) {
+          final ratingsSnapshot = await _firestore
+              .collection('ratings')
+              .where('eventId', isEqualTo: event.id)
+              .get();
+          final ratings = ratingsSnapshot.docs
+              .map((doc) => (doc.data()['rating'] as num?)?.toDouble())
+              .whereType<double>()
+              .toList();
+          if (ratings.isNotEmpty) {
+            final avgRating = ratings.reduce((a, b) => a + b) / ratings.length;
+
+            if (avgRating > 3.0) {
+              final similarity = cosineSimilarity.cosineSimilarity(
+                averageVector,
+                event.embeddingVector!,
+              );
+              scoredEvents.add({
+                'event': event,
+                'similarity': similarity,
+              });
+            }
+          }
         }
       }
+      scoredEvents.sort((a, b) => (b['similarity'] as double).compareTo(a['similarity'] as double));
+      final recommendations = scoredEvents
+          .take(5)
+          .map((entry) => entry['event'] as EventDTO)
+          .toList();
       return recommendations;
     } on FirebaseException catch (e) {
       throw Exception(e.message);
@@ -207,6 +236,7 @@ class EventDatabaseService {
       throw Exception(e.toString());
     }
   }
+
 
 }
 
