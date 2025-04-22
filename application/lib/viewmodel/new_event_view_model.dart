@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:application/model/event_model.dart';
 import 'package:flutter/foundation.dart';
+import '../load_generated_text.dart';
 import '../service/event_database_service.dart';
 import '../utils/text_strings.dart';
 import 'dart:io';
@@ -23,6 +24,10 @@ class NewEventScreenViewModel with ChangeNotifier {
     'Politika',
     'Kultúra'
   ];
+
+  NewEventScreenViewModel() {
+    loadEvents();
+  }
 
   void setName(String name) {
     _event.name = name;
@@ -55,7 +60,16 @@ class NewEventScreenViewModel with ChangeNotifier {
   }
 
   void setDescription(String description) {
-    _event.description = description;
+    if (description.isEmpty) {
+      final fuzzyDescription = getDescriptionForEvent(_event.name);
+      if (fuzzyDescription != null) {
+        _event.description = fuzzyDescription;
+      } else {
+        _event.description = "";
+      }
+    } else {
+      _event.description = description;
+    }
     notifyListeners();
   }
 
@@ -108,15 +122,8 @@ class NewEventScreenViewModel with ChangeNotifier {
   }
 
   String? validateImage(List<dynamic>? value) {
-    if (value == null) {
+    if (value == null || value.isEmpty) {
       return mustAddImageErrorMessage;
-    }
-    return null;
-  }
-
-  String? validateDescription(String value) {
-    if (value.isEmpty) {
-      return mustEnterDescriptionErrorMessage;
     }
     return null;
   }
@@ -127,4 +134,12 @@ class NewEventScreenViewModel with ChangeNotifier {
     }
     return null;
   }
+
+  String? validateDescription(String? value) {
+    if ((value == null || value.isEmpty) && (_event.description.isEmpty)) {
+      return mustEnterDescriptionErrorMessage;
+    }
+    return null;
+  }
+
 }
