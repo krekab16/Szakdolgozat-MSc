@@ -1,3 +1,4 @@
+import 'package:application/ui/my_ticket_screen_ui.dart';
 import 'package:application/ui/splash_screen.dart';
 import 'package:application/ui/face_id_screen_ui.dart';
 import 'package:application/ui/favourite_event_screen_ui.dart';
@@ -12,6 +13,7 @@ import 'package:application/ui/sign_up_screen_ui.dart';
 import 'package:application/ui/start_screen_ui.dart';
 import 'package:application/utils/route_constants.dart';
 import 'package:application/utils/text_strings.dart';
+import 'package:application/viewmodel/my_ticket_view_model.dart';
 import 'package:application/viewmodel/splash_screen_view_model.dart';
 import 'package:application/viewmodel/created_event_screen_view_model.dart';
 import 'package:application/viewmodel/event_view_model.dart';
@@ -66,6 +68,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => CreatedEventViewModel()),
         ChangeNotifierProvider(create: (_) => FaceIdViewModel()),
         ChangeNotifierProvider(create: (_) => RatedEventViewModel()),
+        ChangeNotifierProvider(create: (_) => MyTicketViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -88,6 +91,7 @@ class _MyAppState extends State<MyApp> {
           faceIdRoute: (context) => const FaceIdScreen(),
           ratedEventRoute: (context) => const RatedEventScreen(),
           splashScreenRoute: (context) => const SplashScreen(),
+          myTicketScreenRoute: (context) => const MyTicketScreen(),
         },
       ),
     );

@@ -100,4 +100,31 @@ class Styles {
     fontSize: 20,
     color: MyColors.darkBlueColor,
   );
+
+  static const TextStyle ticketCardText = TextStyle(
+    fontFamily: robotoFont,
+    fontSize: 15,
+    color: Colors.black,
+  );
+
+  static const TextStyle ticketCardEventNameText = TextStyle(
+    fontFamily: robotoFont,
+    fontSize: 18,
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle qrCodeCardEventNameText = TextStyle(
+    fontFamily: robotoFont,
+    fontSize: 24,
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle qrCodeCardEventLocationText = TextStyle(
+    fontFamily: robotoFont,
+    fontSize: 16,
+    color: Colors.black,
+  );
+
 }

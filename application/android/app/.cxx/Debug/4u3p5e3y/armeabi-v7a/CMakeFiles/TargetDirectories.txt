@@ -1,0 +1,2 @@
+C:/Users/Reka/Desktop/MSc/4.felev/szakdoga/qrcode/Szakdolgozat-MSc/application/android/app/.cxx/Debug/4u3p5e3y/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Reka/Desktop/MSc/4.felev/szakdoga/qrcode/Szakdolgozat-MSc/application/android/app/.cxx/Debug/4u3p5e3y/armeabi-v7a/CMakeFiles/rebuild_cache.dir
