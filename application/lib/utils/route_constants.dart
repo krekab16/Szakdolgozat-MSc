@@ -13,3 +13,5 @@ const String participatedEventRoute = '/participate';
 const String mapRoute = '/map';
 const String ratedEventRoute = '/rated_event';
 const String splashScreenRoute = '/splash_screen';
+const String ticketScreenRoute = '/ticket_screen';
+const String myTicketScreenRoute = '/my_ticket_screen';

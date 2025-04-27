@@ -4,7 +4,6 @@ class UserDTO {
   late String email;
   late String password;
   late bool isOrganizer;
-  List<String>? favorites;
   late String id;
   late String? token;
 
@@ -15,7 +14,6 @@ class UserDTO {
     required this.password,
     required this.isOrganizer,
     required this.id,
-    this.favorites,
     this.token,
   });
 
@@ -26,7 +24,6 @@ class UserDTO {
       'email': email,
       'password': password,
       'isOrganizer': isOrganizer,
-      'favorites': favorites,
     };
   }
 
@@ -37,7 +34,6 @@ class UserDTO {
       email: json['email'],
       password: json['password'],
       isOrganizer: json['isOrganizer'],
-      favorites: List<String>.from(json['favorites'] as List),
       id: id,
       token: json['token'],
     );

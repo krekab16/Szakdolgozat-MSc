@@ -10,6 +10,7 @@ class EventDTO {
   String description;
   String id;
 
+
   EventDTO({
     required this.name,
     required this.address,
