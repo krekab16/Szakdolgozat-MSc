@@ -40,27 +40,6 @@ class _ParticipatedEventScreenState extends State<ParticipatedEventScreen> {
                     .toList(),
               ),
             ),
-
-            if (participatedEventViewModel.recommendedEvents.events.isNotEmpty) ...[
-              Divider(color: Colors.grey, thickness: 3),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Text(
-                  recommendedEvents,
-                  style: Styles.textStyles,
-                ),
-              ),
-              // Display recommended events
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  children: participatedEventViewModel
-                      .recommendedEvents.events
-                      .map((event) => EventBox(event))
-                      .toList(),
-                ),
-              ),
-            ],
           ],
         ),
       ),
