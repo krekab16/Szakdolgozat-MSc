@@ -61,17 +61,6 @@ class UserDatabaseService {
     }
   }
 
-  Future<void> updateUser(UserDTO userDTO) async {
-    try {
-      await _firestore
-          .collection('users')
-          .doc(userDTO.id)
-          .update({'favorites': userDTO.favorites});
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
-    }
-  }
-
   Future<UserDTO> getUserProfile(String userId) async {
     try {
       DocumentSnapshot userSnapshot =

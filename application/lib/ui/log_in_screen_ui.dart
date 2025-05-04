@@ -105,7 +105,7 @@ class _LogInScreen extends State<LogInScreen> {
                               await logInViewModel.login(userModel)
                           );
                           if (logInViewModel.errorMessages.isEmpty) {
-                            logInViewModel.navigateToHome(context);
+                            logInViewModel.navigateToHome(context, userModel.id);
                           } else {
                             showDialog(
                                 context: context,
