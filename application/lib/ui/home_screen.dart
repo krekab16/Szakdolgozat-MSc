@@ -51,7 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     aspectRatio: 16 / 9,
                     viewportFraction: 0.8,
                   ),
-                  items: homeViewModel.homeModel.events.map((event) {
+                  items: (homeViewModel.recommendedEvents.events.isNotEmpty
+                      ? homeViewModel.recommendedEvents.events
+                      : homeViewModel.homeModel.events)
+                      .map((event) {
                     return Builder(
                       builder: (BuildContext context) {
                         return EventBox(event);

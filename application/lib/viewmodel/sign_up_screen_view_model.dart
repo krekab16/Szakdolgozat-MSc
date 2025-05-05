@@ -1,18 +1,30 @@
 import 'dart:core';
-import 'dart:core';
 import 'package:application/model/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../service/user_database_service.dart';
-import '../utils/route_constants.dart';
+import '../ui/home_screen.dart';
 import '../utils/text_strings.dart';
+import 'home_view_model.dart';
 
 class SignUpViewModel with ChangeNotifier {
   final UserDatabaseService service = UserDatabaseService();
 
   List<String> errorMessages = [];
 
-  void navigateToHomeScreen(BuildContext context) {
-    Navigator.pushNamed(context, homeRoute);
+
+  void navigateToHome(BuildContext context, String userId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChangeNotifierProvider(
+          create: (context) =>
+          HomeViewModel()
+            ..fetchRecommendedEvents(userId),
+          child: const HomeScreen(),
+        ),
+      ),
+    );
   }
 
   Future<String> register(UserModel userModel) async {

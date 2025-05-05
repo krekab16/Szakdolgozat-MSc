@@ -29,4 +29,6 @@ class ParticipatedEventViewModel with ChangeNotifier {
     }
     notifyListeners();
   }
+
+
 }

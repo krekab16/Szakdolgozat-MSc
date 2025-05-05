@@ -121,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  dart_numerics:
+    dependency: "direct main"
+    description:
+      name: dart_numerics
+      sha256: "47408d4890551636204851325e5649bf1a1616ebc325184c36722a1716cbaba4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   fake_async:
     dependency: transitive
     description:
@@ -680,6 +688,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  ml_linalg:
+    dependency: "direct main"
+    description:
+      name: ml_linalg
+      sha256: abbbd506dc894f8b0394cf5c5d45aab45b7e2a89b86bba9c9b5b8a412b4bec5d
+      url: "https://pub.dev"
+    source: hosted
+    version: "13.12.6"
   nested:
     dependency: transitive
     description:
@@ -965,6 +981,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.0"
+  tuple:
+    dependency: transitive
+    description:
+      name: tuple
+      sha256: a97ce2013f240b2f3807bcbaf218765b6f301c3eff91092bcfa23a039e7dd151
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   typed_data:
     dependency: transitive
     description:

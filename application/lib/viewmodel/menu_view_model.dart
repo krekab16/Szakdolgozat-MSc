@@ -1,5 +1,6 @@
 import 'package:application/ui/rated_event_screen_ui.dart';
 import 'package:application/user_login_singleton.dart';
+import 'package:application/viewmodel/home_view_model.dart';
 import 'package:application/viewmodel/profile_view_model.dart';
 import 'package:application/viewmodel/participated_event_view_model.dart';
 import 'package:application/viewmodel/rated_event_view_model.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../service/user_database_service.dart';
 import '../ui/favourite_event_screen_ui.dart';
+import '../ui/home_screen.dart';
 import '../ui/profile_screen_ui.dart';
 import '../ui/participated_event_screen_ui.dart';
 import '../utils/route_constants.dart';
@@ -47,9 +49,21 @@ class MenuViewModel with ChangeNotifier {
     );
   }
 
-  void navigateToHome(BuildContext context) {
-    Navigator.pushNamed(context, homeRoute);
+
+  void navigateToHome(BuildContext context, String userId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChangeNotifierProvider(
+          create: (context) =>
+          HomeViewModel()
+            ..fetchRecommendedEvents(userId),
+          child: const HomeScreen(),
+        ),
+      ),
+    );
   }
+
 
   void navigateToParticipatedEvent(BuildContext context, String userId) {
     Navigator.push(
@@ -57,7 +71,8 @@ class MenuViewModel with ChangeNotifier {
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider(
           create: (context) =>
-          ParticipatedEventViewModel()..fetchParticipatedEvent(userId),
+          ParticipatedEventViewModel()
+            ..fetchParticipatedEvent(userId),
           child: const ParticipatedEventScreen(),
         ),
       ),

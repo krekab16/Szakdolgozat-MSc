@@ -16,6 +16,7 @@ class ParticipatedEventScreen extends StatefulWidget {
 class _ParticipatedEventScreenState extends State<ParticipatedEventScreen> {
   @override
   Widget build(BuildContext context) {
+
     final participatedEventViewModel =
         Provider.of<ParticipatedEventViewModel>(context);
     return Scaffold(
