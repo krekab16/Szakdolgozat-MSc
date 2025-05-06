@@ -53,6 +53,9 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   rating_summary: ^1.0.4
   shared_preferences: ^2.5.2
+  tflite_flutter: ^0.11.0
+  image_picker: ^1.1.2
+  image: ^4.5.4
   ml_linalg: ^13.12.6
   dart_numerics: ^0.0.6
 
@@ -82,6 +85,7 @@ flutter:
   assets:
     - assets/
     - assets/imgs/
+    - assets/model.tflite
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

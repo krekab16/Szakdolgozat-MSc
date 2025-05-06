@@ -100,11 +100,14 @@ class MenuViewModel with ChangeNotifier {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChangeNotifierProvider(
-          create: (context) =>
-          CreatedEventViewModel()..fetchCreatedEvents(userId),
-          child: const CreatedEventScreen(),
-        ),
+        builder: (context) {
+          return ChangeNotifierProvider(
+            create: (_) => CreatedEventViewModel()
+              ..fetchCreatedEvents(userId)
+              ..fetchRecommendedEventsForOrganizer(userId),
+            builder: (context, _) => const CreatedEventScreen(),
+          );
+        },
       ),
     );
   }
