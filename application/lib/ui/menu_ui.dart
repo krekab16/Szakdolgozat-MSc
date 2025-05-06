@@ -9,6 +9,8 @@ import '../utils/text_strings.dart';
 import '../viewmodel/menu_view_model.dart';
 
 class Menu extends StatefulWidget {
+
+
   const Menu({Key? key}) : super(key: key);
 
   @override
@@ -61,7 +63,7 @@ class _MenuState extends State<Menu> {
             ),
           ),
           DrawerList(home, const Icon(Icons.home),
-              () => menuViewModel.navigateToHome(context)),
+              () => menuViewModel.navigateToHome(context, userModel.id)),
           DrawerList(favourites, const Icon(Icons.favorite),
               () => menuViewModel.navigateToFavourites(context,userModel.id)),
           DrawerList(profile, const Icon(Icons.account_circle),

@@ -5,25 +5,22 @@ import '../load_generated_text.dart';
 import '../service/event_database_service.dart';
 import '../utils/text_strings.dart';
 import 'dart:io';
+import '../event_recommendation.dart';
+
 
 class NewEventScreenViewModel with ChangeNotifier {
   final EventModel _event = EventModel.createEmpty();
 
   final EventDatabaseService service = EventDatabaseService();
 
+  final EventRecommendation eventRecommendation = EventRecommendation();
+
   List<String> errorMessages = [];
 
-  final List<String> categories = [
-    'Sport',
-    'Művészet',
-    'Zene',
-    'Divat',
-    'Technológia',
-    'Gasztronómia',
-    'Család',
-    'Politika',
-    'Kultúra'
-  ];
+  NewEventScreenViewModel() {
+    eventRecommendation.loadModel();
+
+  }
 
   NewEventScreenViewModel() {
     loadEvents();
@@ -54,9 +51,23 @@ class NewEventScreenViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setImage(String image) {
-    _event.image = image;
+  void setImage(String? imagePath) async {
+    if (imagePath == null || imagePath.isEmpty) {
+      return;
+    }
+    _event.image = imagePath;
     notifyListeners();
+    final imageFile = File(imagePath);
+    try {
+      var recommendedCategory = await eventRecommendation.recommendEvent(imageFile);
+      setCategory(recommendedCategory);
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+    }
   }
 
   void setDescription(String description) {
@@ -110,13 +121,6 @@ class NewEventScreenViewModel with ChangeNotifier {
   String? validateAddress(String value) {
     if (value.isEmpty) {
       return mustEnterAddressErrorMessage;
-    }
-    return null;
-  }
-
-  String? validateCategory(String? value) {
-    if (value == null) {
-      return mustSelectCategoryErrorMessage;
     }
     return null;
   }

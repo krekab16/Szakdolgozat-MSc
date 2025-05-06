@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../model/user_model.dart';
 import '../service/user_database_service.dart';
+import '../ui/home_screen.dart';
 import '../user_login_singleton.dart';
-import '../utils/route_constants.dart';
 import '../utils/text_strings.dart';
+import 'home_view_model.dart';
 
 class LogInViewModel with ChangeNotifier {
   final UserDatabaseService service = UserDatabaseService();
@@ -35,8 +37,18 @@ class LogInViewModel with ChangeNotifier {
     return newUser;
   }
 
-  void navigateToHome(BuildContext context) {
-    Navigator.pushNamed(context, homeRoute);
+  void navigateToHome(BuildContext context, String userId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChangeNotifierProvider(
+          create: (context) =>
+          HomeViewModel()
+            ..fetchRecommendedEvents(userId),
+          child: const HomeScreen(),
+        ),
+      ),
+    );
   }
 
   String? validateEmail(String value) {

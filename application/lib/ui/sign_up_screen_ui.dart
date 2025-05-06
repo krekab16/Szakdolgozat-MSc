@@ -113,7 +113,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           userModel.id =
                               await signUpViewModel.register(userModel);
                           if (signUpViewModel.errorMessages.isEmpty) {
-                            signUpViewModel.navigateToHomeScreen(context);
+                            signUpViewModel.navigateToHome(context, userModel.id);
                           } else {
                             showDialog(
                                 context: context,
