@@ -1,3 +1,5 @@
+import 'package:application/model/my_ticket_with_event_dto.dart';
+import 'package:application/ui/ticket_screen_ui.dart';
 import 'package:application/utils/my_button.dart';
 import 'package:application/viewmodel/event_view_model.dart';
 import 'package:flutter/material.dart';
@@ -298,8 +300,18 @@ class _EventScreenState extends State<EventScreen> {
                             await eventViewModel.addParticipation(
                                 userModel.id, widget.eventModel);
                             if (eventViewModel.errorMessages.isEmpty) {
-                              Fluttertoast.showToast(
-                                  msg: successfulParticipationMessage);
+                              Fluttertoast.showToast(msg: successfulParticipationMessage);
+                              MyTicketWithEventDTO? myTicketWithEventDTO = await eventViewModel.addAndGetTicketData(userModel.id, widget.eventModel);
+                              if (myTicketWithEventDTO != null) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TicketScreen(
+                                        myTicketWithEventDTO
+                                    ),
+                                  ),
+                                );
+                              }
                             } else {
                               showDialog(
                                 context: context,

@@ -11,6 +11,7 @@ class EventDTO {
   String id;
   List<double>? embeddingVector;
 
+
   EventDTO({
     required this.name,
     required this.address,

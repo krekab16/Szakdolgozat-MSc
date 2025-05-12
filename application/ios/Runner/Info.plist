@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSCameraUsageDescription</key>
+    <string>Ez az alkalmazás kamerát használ QR kódok beolvasásához.</string>
     <key>NSFaceIDUsageDescription</key>
     <string>Arcazonosítás szükséges a bejelentkezéshez.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
