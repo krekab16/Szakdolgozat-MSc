@@ -54,6 +54,7 @@ dependencies:
   rating_summary: ^1.0.4
   shared_preferences: ^2.5.2
   tflite_flutter: ^0.11.0
+  string_similarity: ^2.1.1
   image_picker: ^1.1.2
   image: ^4.5.4
   ml_linalg: ^13.12.6
@@ -85,6 +86,7 @@ flutter:
   assets:
     - assets/
     - assets/imgs/
+    - assets/generated_text/
     - assets/model.tflite
 
   # An image asset can refer to one or more resolution-specific "variants", see

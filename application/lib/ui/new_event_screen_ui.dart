@@ -134,8 +134,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                   ),
                   onChanged: (newEventDescription) => newEventScreenViewModel
                       .setDescription(newEventDescription),
-                  validator: (value) =>
-                      newEventScreenViewModel.validateDescription(value!),
+                  validator: (value) => newEventScreenViewModel.validateDescription(value),
                 ),
               ),
               Padding(
@@ -156,39 +155,40 @@ class _NewEventScreenState extends State<NewEventScreen> {
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: MyButton(create, () async {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState?.save();
-                      await newEventScreenViewModel.addNewEvent(
-                          userModel.id, _imageFile!);
-                      if (newEventScreenViewModel.errorMessages.isEmpty) {
-                        Fluttertoast.showToast(msg: successfulAddMessage);
-                        _formKey.currentState?.reset();
-                        dateController.clear();
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                                  title: Text(
-                                    errorDialogTitle,
-                                    style: Styles.errorText,
-                                  ),
-                                  content: Text(
-                                    newEventScreenViewModel.errorMessages
-                                        .join(" "),
-                                    style: Styles.errorText,
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: Text(close),
-                                    )
-                                  ],
-                                ));
-                      }
+                padding: const EdgeInsets.all(10),
+                child: MyButton(create, () async {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState?.save();
+                    newEventScreenViewModel.setDescription("");
+                    await newEventScreenViewModel.addNewEvent(userModel.id, _imageFile!);
+                    if (newEventScreenViewModel.errorMessages.isEmpty) {
+                      Fluttertoast.showToast(msg: successfulAddMessage);
+                      _formKey.currentState?.reset();
+                      dateController.clear();
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text(
+                            errorDialogTitle,
+                            style: Styles.errorText,
+                          ),
+                          content: Text(
+                            newEventScreenViewModel.errorMessages.join(" "),
+                            style: Styles.errorText,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(close),
+                            )
+                          ],
+                        ),
+                      );
                     }
-                  })),
+                  }
+                }),
+              )
             ],
           ),
         ),
