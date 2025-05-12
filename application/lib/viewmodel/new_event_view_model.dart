@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:application/model/event_model.dart';
 import 'package:flutter/foundation.dart';
+import '../load_generated_text.dart';
 import '../service/event_database_service.dart';
 import '../utils/text_strings.dart';
 import 'dart:io';
+import '../event_recommendation.dart';
+
 
 class NewEventScreenViewModel with ChangeNotifier {
   final EventModel _event = EventModel.createEmpty();
 
   final EventDatabaseService service = EventDatabaseService();
 
+  final EventRecommendation eventRecommendation = EventRecommendation();
+
   List<String> errorMessages = [];
 
-  final List<String> categories = [
-    'Sport',
-    'Művészet',
-    'Zene',
-    'Divat',
-    'Technológia',
-    'Gasztronómia',
-    'Család',
-    'Politika',
-    'Kultúra'
-  ];
+  NewEventScreenViewModel() {
+    eventRecommendation.loadModel();
+
+  }
+
+  NewEventScreenViewModel() {
+    loadEvents();
+  }
 
   void setName(String name) {
     _event.name = name;
@@ -49,13 +51,36 @@ class NewEventScreenViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setImage(String image) {
-    _event.image = image;
+  void setImage(String? imagePath) async {
+    if (imagePath == null || imagePath.isEmpty) {
+      return;
+    }
+    _event.image = imagePath;
     notifyListeners();
+    final imageFile = File(imagePath);
+    try {
+      var recommendedCategory = await eventRecommendation.recommendEvent(imageFile);
+      setCategory(recommendedCategory);
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+    }
   }
 
   void setDescription(String description) {
-    _event.description = description;
+    if (description.isEmpty) {
+      final fuzzyDescription = getDescriptionForEvent(_event.name);
+      if (fuzzyDescription != null) {
+        _event.description = fuzzyDescription;
+      } else {
+        _event.description = "";
+      }
+    } else {
+      _event.description = description;
+    }
     notifyListeners();
   }
 
@@ -100,23 +125,9 @@ class NewEventScreenViewModel with ChangeNotifier {
     return null;
   }
 
-  String? validateCategory(String? value) {
-    if (value == null) {
-      return mustSelectCategoryErrorMessage;
-    }
-    return null;
-  }
-
   String? validateImage(List<dynamic>? value) {
-    if (value == null) {
+    if (value == null || value.isEmpty) {
       return mustAddImageErrorMessage;
-    }
-    return null;
-  }
-
-  String? validateDescription(String value) {
-    if (value.isEmpty) {
-      return mustEnterDescriptionErrorMessage;
     }
     return null;
   }
@@ -127,4 +138,12 @@ class NewEventScreenViewModel with ChangeNotifier {
     }
     return null;
   }
+
+  String? validateDescription(String? value) {
+    if ((value == null || value.isEmpty) && (_event.description.isEmpty)) {
+      return mustEnterDescriptionErrorMessage;
+    }
+    return null;
+  }
+
 }

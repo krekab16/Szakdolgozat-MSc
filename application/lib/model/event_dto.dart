@@ -9,6 +9,7 @@ class EventDTO {
   int stuffLimit;
   String description;
   String id;
+  List<double>? embeddingVector;
 
 
   EventDTO({
@@ -20,6 +21,7 @@ class EventDTO {
     required this.stuffLimit,
     required this.description,
     required this.id,
+    this.embeddingVector,
   });
 
   Map<String, dynamic> toJson() {
@@ -44,6 +46,13 @@ class EventDTO {
       stuffLimit: json['stuffLimit'],
       description: json['description'],
       id: id,
+      embeddingVector: (json['embedding_field'] != null &&
+          json['embedding_field'] is List)
+          ? (json['embedding_field'] as List)
+          .whereType<num>()
+          .map((e) => e.toDouble())
+          .toList()
+          : [],
     );
   }
 }

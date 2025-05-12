@@ -23,7 +23,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
   final _formKey = GlobalKey<FormState>();
   final dateController = TextEditingController();
   File? _imageFile;
-  String? selectedCategory;
 
   void _showDateTimePicker() {
     showDatePicker(
@@ -93,29 +92,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: DropdownButtonFormField(
-                  value: selectedCategory,
-                  items: newEventScreenViewModel.categories.map((category) {
-                    return DropdownMenuItem(
-                      value: category,
-                      child: Text(category),
-                    );
-                  }).toList(),
-                  decoration: InputDecoration(
-                    labelText: newEventCategory,
-                    border: const OutlineInputBorder(),
-                    prefixIcon: const Icon(
-                      Icons.category_outlined,
-                    ),
-                  ),
-                  onChanged: (selectedCategory) =>
-                      newEventScreenViewModel.setCategory(selectedCategory!),
-                  validator: (selectedCategory) =>
-                      newEventScreenViewModel.validateCategory(selectedCategory),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: _showDateTimePicker,
                   child: AbsorbPointer(
@@ -128,8 +104,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                           Icons.date_range_rounded,
                         ),
                       ),
-                      validator: (value) =>
-                          newEventScreenViewModel.validateDate(value!),
+                      validator: (value) => newEventScreenViewModel.validateDate(value!),
                     ),
                   ),
                 ),
@@ -139,10 +114,12 @@ class _NewEventScreenState extends State<NewEventScreen> {
                     Icons.create_rounded,
                   ),
                   newEventStuffLimit,
-                  (newEventStuffLimit) => newEventScreenViewModel
-                      .setStuffLimit(int.parse(newEventStuffLimit)),
-                  (value) =>
-                      newEventScreenViewModel.validateStuffLimit(value!),
+                      (newEventStuffLimit) {
+                    if (newEventStuffLimit.isNotEmpty && int.tryParse(newEventStuffLimit) != null) {
+                      newEventScreenViewModel.setStuffLimit(int.parse(newEventStuffLimit));
+                    }
+                  },
+                  (value) => newEventScreenViewModel.validateStuffLimit(value!),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -157,8 +134,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                   ),
                   onChanged: (newEventDescription) => newEventScreenViewModel
                       .setDescription(newEventDescription),
-                  validator: (value) =>
-                      newEventScreenViewModel.validateDescription(value!),
+                  validator: (value) => newEventScreenViewModel.validateDescription(value),
                 ),
               ),
               Padding(
@@ -168,48 +144,51 @@ class _NewEventScreenState extends State<NewEventScreen> {
                   decoration: InputDecoration(labelText: choosePicture),
                   maxImages: 1,
                   onChanged: (images) {
-                    setState(() {
-                      _imageFile = File(images![0].path);
-                    });
-                    newEventScreenViewModel.setImage(images![0].path);
+                    if (images != null && images.isNotEmpty) {
+                      setState(() {
+                        _imageFile = File(images[0].path);
+                      });
+                      newEventScreenViewModel.setImage(images[0].path);
+                    }
                   },
                   validator: (value) => newEventScreenViewModel.validateImage(value),
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: MyButton(create, () async {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState?.save();
-                      await newEventScreenViewModel.addNewEvent(
-                          userModel.id, _imageFile!);
-                      if (newEventScreenViewModel.errorMessages.isEmpty) {
-                        Fluttertoast.showToast(msg: successfulAddMessage);
-                        _formKey.currentState?.reset();
-                        dateController.clear();
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                                  title: Text(
-                                    errorDialogTitle,
-                                    style: Styles.errorText,
-                                  ),
-                                  content: Text(
-                                    newEventScreenViewModel.errorMessages
-                                        .join(" "),
-                                    style: Styles.errorText,
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: Text(close),
-                                    )
-                                  ],
-                                ));
-                      }
+                padding: const EdgeInsets.all(10),
+                child: MyButton(create, () async {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState?.save();
+                    newEventScreenViewModel.setDescription("");
+                    await newEventScreenViewModel.addNewEvent(userModel.id, _imageFile!);
+                    if (newEventScreenViewModel.errorMessages.isEmpty) {
+                      Fluttertoast.showToast(msg: successfulAddMessage);
+                      _formKey.currentState?.reset();
+                      dateController.clear();
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text(
+                            errorDialogTitle,
+                            style: Styles.errorText,
+                          ),
+                          content: Text(
+                            newEventScreenViewModel.errorMessages.join(" "),
+                            style: Styles.errorText,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(close),
+                            )
+                          ],
+                        ),
+                      );
                     }
-                  })),
+                  }
+                }),
+              )
             ],
           ),
         ),

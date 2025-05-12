@@ -90,3 +90,4 @@ String showYourTicket= "Mutasd be ezt a jegyet a belépéskor!";
 String scanQrCode= "QR kód beolvasás";
 String qrCodeDetected= "Érvényes QR kód";
 String qrCodeInvalid= "Érvénytelen QR kód";
+String recommendedEvents= "Ajánlott események";
