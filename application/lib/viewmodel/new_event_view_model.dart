@@ -18,12 +18,8 @@ class NewEventScreenViewModel with ChangeNotifier {
   List<String> errorMessages = [];
 
   NewEventScreenViewModel() {
-    eventRecommendation.loadModel();
-
-  }
-
-  NewEventScreenViewModel() {
     loadEvents();
+    eventRecommendation.loadModel();
   }
 
   void setName(String name) {
