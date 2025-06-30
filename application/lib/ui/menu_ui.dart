@@ -72,7 +72,11 @@ class _MenuState extends State<Menu> {
                   () => menuViewModel.navigateToRatedEvent(context, userModel.id)),
           DrawerList(participatedEvents, const Icon(Icons.event_rounded),
                   () => menuViewModel.navigateToParticipatedEvent(context, userModel.id)),
+          DrawerList(tickets, const Icon(Icons.qr_code_2_outlined),
+                  () => menuViewModel.navigateToTicket(context, userModel.id)),
           if (userModel.isOrganizer)...[
+            DrawerList(scanTicket, const Icon(Icons.qr_code_scanner_outlined),
+                    () => menuViewModel.navigateToScanTicket(context, userModel.id)),
             DrawerList(newEvent, const Icon(Icons.fiber_new),
                 () => menuViewModel.navigateToNewEvent(context)),
             DrawerList(created, const Icon(Icons.create),

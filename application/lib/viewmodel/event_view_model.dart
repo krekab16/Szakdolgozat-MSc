@@ -1,4 +1,5 @@
 import 'package:application/model/event_model.dart';
+import 'package:application/model/my_ticket_with_event_dto.dart';
 import 'package:application/model/rating_dto.dart';
 import 'package:application/model/user_favorite_model.dart';
 import 'package:application/model/user_model.dart';
@@ -7,9 +8,11 @@ import 'package:flutter/widgets.dart';
 import '../model/event_favorite_model.dart';
 import '../model/event_rating_model.dart';
 import '../model/favorite_dto.dart';
+import '../model/ticket_dto.dart';
 import '../service/event_database_service.dart';
 import '../service/favorite_database_service.dart';
 import '../service/rating_database_service.dart';
+import '../service/ticket_database_service.dart';
 import '../service/user_database_service.dart';
 import '../utils/text_strings.dart';
 
@@ -18,9 +21,11 @@ class EventViewModel with ChangeNotifier {
   final RatingDatabaseService ratingService = RatingDatabaseService();
   final UserDatabaseService userService = UserDatabaseService();
   final FavoriteDatabaseService favoriteService = FavoriteDatabaseService();
-
+  final TicketDatabaseService ticketService = TicketDatabaseService();
 
   List<String> errorMessages = [];
+
+  List<String> generatedTickets = [];
 
   Future<void> addLikeToEvent(String userId, String eventId, UserModel userModel, EventModel eventModel) async {
     try {
@@ -240,6 +245,24 @@ class EventViewModel with ChangeNotifier {
       return {};
     } finally {
       notifyListeners();
+    }
+  }
+
+  Future<MyTicketWithEventDTO?> addAndGetTicketData(String userId, EventModel eventModel) async {
+    try {
+      TicketDTO ticketDTO = TicketDTO(userId: userId, eventId: eventModel.id);
+      final MyTicketWithEventDTO? ticketData = await ticketService.addAndGetTicketToDB(ticketDTO);
+      errorMessages = [];
+      notifyListeners();
+      return ticketData;
+    } catch (e) {
+      if (e.toString().isNotEmpty) {
+        errorMessages = [e.toString()];
+      } else {
+        errorMessages = [standardErrorMessage];
+      }
+      notifyListeners();
+      return null;
     }
   }
 
